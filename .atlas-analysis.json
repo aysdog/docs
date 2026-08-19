@@ -1,0 +1,92 @@
+{
+  "projectType": "cli-tool",
+  "projectName": "commitdog",
+  "projectDescription": "A fast Git workflow CLI that handles commits, branches, PRs, releases, and secret scanning — no AI, no telemetry, works with GitHub, GitLab, Gitea, and Forgejo.",
+  "theme": "luma",
+  "primaryColor": "#fcd404",
+  "lightColor": "#7c6404",
+  "darkColor": null,
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Docs",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "installation",
+              "setup"
+            ]
+          },
+          {
+            "group": "Core Commands",
+            "pages": [
+              "commands/commit",
+              "commands/branch",
+              "commands/sync",
+              "commands/pr",
+              "commands/stash",
+              "commands/revert"
+            ]
+          },
+          {
+            "group": "Releasing",
+            "pages": [
+              "release/overview",
+              "release/targets",
+              "release/changelog"
+            ]
+          },
+          {
+            "group": "Security",
+            "pages": [
+              "security/secret-detection",
+              "security/history-scan"
+            ]
+          },
+          {
+            "group": "Reference",
+            "pages": [
+              "reference/configuration",
+              "reference/platforms",
+              "reference/troubleshooting"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Automatic commit message suggestions derived from your diff — no AI, no network calls",
+    "Built-in secret detection blocks commits containing leaked keys or tokens",
+    "Atomic release workflow with rollback across GitHub, GitLab, Gitea, and Forgejo",
+    "Sync command with auto-recovery for common push/pull failures",
+    "Interactive branch management: create, switch, delete with merge-safety checks",
+    "Pull request creation and review from the terminal",
+    "Full commit history secret scanner",
+    "Zero telemetry — config never leaves your machine"
+  ],
+  "publicApiSurface": [
+    "commitdog",
+    "commitdog <file>",
+    "commitdog init",
+    "commitdog setup",
+    "commitdog branch",
+    "commitdog branch create",
+    "commitdog branch delete",
+    "commitdog branch ls",
+    "commitdog switch",
+    "commitdog merge",
+    "commitdog pr",
+    "commitdog sync",
+    "commitdog stash",
+    "commitdog revert",
+    "commitdog release",
+    "commitdog release config",
+    "commitdog release --changelog-only",
+    "commitdog secrets",
+    "commitdog --update",
+    "commitdog --version"
+  ]
+}

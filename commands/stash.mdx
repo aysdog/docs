@@ -1,0 +1,76 @@
+---
+title: "Save and restore work in progress with commitdog stash"
+sidebarTitle: "stash"
+description: "Interactively save uncommitted changes to a stash, pop a saved stash back into your working tree, or drop stashes you no longer need."
+---
+
+`commitdog stash` gives you an interactive interface for managing Git stashes. If you have no existing stashes, it goes straight to saving your current changes. If stashes already exist, it lists them and lets you choose what to do: pop one back into the working tree, drop one you no longer need, or save a new stash on top of the existing ones.
+
+## Usage
+
+```bash
+commitdog stash
+```
+
+## Saving a stash
+
+<Steps>
+  <Step title="Run commitdog stash">
+    If no stashes exist, commitdog goes directly to the save prompt:
+
+    ```
+      stash message (optional, enter to skip) ›
+    ```
+
+    Enter a short description to make the stash easy to identify later, or press Enter to skip. Commitdog includes untracked files in the stash automatically.
+  </Step>
+
+  <Step title="Confirm the save">
+    After saving, commitdog confirms:
+
+    ```
+      saving... done
+      ✓ stashed: work in progress on auth
+    ```
+
+    If there is nothing to stash (no local changes), commitdog prints a message and exits without creating an empty stash entry.
+  </Step>
+</Steps>
+
+## Restoring or dropping a stash
+
+<Steps>
+  <Step title="Run commitdog stash">
+    When stashes exist, commitdog lists them with their index and description:
+
+    ```
+      stashes:
+
+      1  WIP: work in progress on auth
+      2  WIP: half-done refactor
+
+      [s] save new, [1-2] pop, [d1-d2] drop, [q] quit ›
+    ```
+  </Step>
+
+  <Step title="Pick an action">
+    - **Pop a stash** — enter the number (e.g. `1`) to apply that stash and remove it from the stash list. If the pop produces conflicts, commitdog prints the conflicted files and instructions for resolving them manually.
+    - **Drop a stash** — enter `d` followed by the number (e.g. `d2`) to delete the stash entry without applying it.
+    - **Save a new stash** — enter `s` to go to the save prompt and add another stash on top of the existing ones.
+    - **Quit** — enter `q` to exit without making any changes.
+  </Step>
+
+  <Step title="Conflict resolution (if needed)">
+    If popping a stash results in merge conflicts, commitdog exits with instructions:
+
+    ```
+      ✗ stash pop has conflicts — resolve them:
+
+        1. fix conflicting files
+        2. git add .
+        3. git stash drop stash@{0}
+    ```
+
+    Fix the conflicts in your editor, stage the resolved files, and drop the stash entry manually to complete the operation.
+  </Step>
+</Steps>

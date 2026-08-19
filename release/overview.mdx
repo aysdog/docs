@@ -1,0 +1,150 @@
+---
+title: "Publish releases with the commitdog release command"
+sidebarTitle: "Overview"
+description: "Bump your version, build binaries, create a tagged release, and upload assets — all in one command, with atomic rollback if anything goes wrong."
+---
+
+`commitdog release` handles the entire release workflow for you. It detects your project's language, reads the current version, lets you pick a semver bump, shows you a changelog preview, and then executes every step — version bump, binary builds, commit, tag, push, and release creation — in sequence. If any step fails, commitdog rolls back every completed step in reverse so your repository is always left in a clean state.
+
+## Supported version files
+
+When you run `commitdog release`, it scans your repository root for a version file in this order:
+
+| Language | File | Pattern |
+|----------|------|---------|
+| Go | `main.go` | `const version = "x.y.z"` |
+| Node.js | `package.json` | `"version": "x.y.z"` |
+| Rust | `Cargo.toml` | `version = "x.y.z"` |
+| Python | `pyproject.toml` | `version = "x.y.z"` |
+| Python | `setup.py` | `version='x.y.z'` |
+| Java | `pom.xml` | `<version>x.y.z</version>` |
+| Any | `VERSION` | bare semver on the first line |
+
+If no version file is found, commitdog offers to create one for you before proceeding.
+
+## Full release workflow
+
+<Steps>
+  <Step title="Run the release command">
+    From the root of your repository, run:
+
+    ```bash
+    commitdog release
+    ```
+
+    commitdog verifies you are inside a Git repository and that a platform token is configured. If you have not run `commitdog setup` yet, it will exit with a prompt to do so.
+  </Step>
+
+  <Step title="Detect or initialize a version file">
+    commitdog scans for a supported version file. If it finds one, it reads the current version and continues. If none is found, you are offered four options:
+
+    ```
+      could not find a version file.
+
+      1  create pyproject.toml  (recommended for Python)
+      2  add __version__ to main python file
+      3  create VERSION file     (works for any language)
+      4  enter version manually  (one time, no file created)
+
+      [1/2/3/4/q] pick ›
+    ```
+
+    Options 1–3 create a file starting at `0.1.0`. Option 4 accepts a one-time semver string without writing any file.
+  </Step>
+
+  <Step title="Check for version drift">
+    If a latest Git tag exists and it does not match the version in your file, commitdog warns you before touching anything:
+
+    ```
+      ! version drift: main.go says v0.2.8 but latest git tag is v0.2.9
+      release anyway? [y/N] ›
+    ```
+
+    Fix the mismatch or confirm to continue.
+  </Step>
+
+  <Step title="Pick a version bump">
+    commitdog displays your current version and the three standard bump options:
+
+    ```
+      detected: Go  ·  current version: v0.2.8
+
+      1  patch  →  v0.2.9
+      2  minor  →  v0.3.0
+      3  major  →  v1.0.0
+      4  custom
+
+      [1/2/3/4/q] pick ›
+    ```
+
+    Choose `4` to enter any valid semver string manually.
+  </Step>
+
+  <Step title="Review the changelog preview">
+    Before any changes are made, commitdog shows a grouped changelog of all commits since the last tag:
+
+    ```
+      changelog preview:
+
+      ### Features
+      - feat: add gitlab gitea forgejo support
+
+      release v0.2.8 → v0.2.9? [y/n] ›
+    ```
+
+    Confirm with `y` to proceed, or `n` to abort without making any changes.
+  </Step>
+
+  <Step title="Execute the release steps">
+    Once confirmed, commitdog runs every step and prints live status:
+
+    ```
+      bumping version in main.go...              ✓
+      building linux/amd64...                    ✓
+      building linux/arm64...                    ✓
+      building darwin/amd64...                   ✓
+      building darwin/arm64...                   ✓
+      building windows/amd64...                  ✓
+      committing...                              ✓
+      tagging v0.2.9...                          ✓
+      pushing...                                 ✓
+      creating GitHub release...                 ✓
+      uploading commitdog-linux-amd64...         ✓
+      uploading commitdog-linux-arm64...         ✓
+      uploading commitdog-darwin-amd64...        ✓
+      uploading commitdog-darwin-arm64...        ✓
+      uploading commitdog-windows-amd64.exe...   ✓
+      uploading checksums.txt...                 ✓
+
+      ✓ v0.2.9 released
+      https://github.com/aysdog/commitdog/releases/tag/v0.2.9
+    ```
+
+    Binary builds and asset uploads only happen for Go projects. For all other languages, commitdog skips directly from the version bump to the commit step.
+  </Step>
+</Steps>
+
+<Note>
+**Atomic rollback** — every completed step registers an undo function before the next step runs. If anything fails — a network cut, an API error, a build failure — commitdog rolls back every completed step in reverse order. Your repository is always left clean. After a rollback, fix the underlying issue and run `commitdog release` again.
+</Note>
+
+## Platform-specific behavior
+
+The release command works across GitHub, GitLab, Gitea, and Forgejo. The core workflow is identical on all platforms; only the asset upload mechanism differs.
+
+<Tabs>
+  <Tab title="GitHub">
+    commitdog creates a GitHub Release via the REST API, then uploads each binary and `checksums.txt` individually using the release upload URL.
+  </Tab>
+  <Tab title="GitLab">
+    commitdog uploads each binary to GitLab's Generic Packages registry, then creates a Release with links pointing to the uploaded package files.
+  </Tab>
+  <Tab title="Gitea">
+    commitdog creates a Gitea Release, then uploads all assets in batches to stay within the API's limits.
+  </Tab>
+  <Tab title="Forgejo">
+    commitdog creates a Forgejo Release, then uploads all assets in batches to stay within the API's limits.
+  </Tab>
+</Tabs>
+
+The platform is read from your `.commitdog` config file (set by `commitdog setup`). If no platform is configured, commitdog defaults to GitHub.

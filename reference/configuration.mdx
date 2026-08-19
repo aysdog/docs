@@ -1,0 +1,101 @@
+---
+title: "commitdog configuration file reference"
+sidebarTitle: "Configuration"
+description: "Learn where commitdog stores its config, how the TOML file is structured, and how to configure per-platform tokens, emails, and release targets."
+---
+
+commitdog stores all credentials and preferences in two files: a global config at `~/.config/commitdog/config.toml` that holds your platform tokens and email addresses, and an optional per-repo file called `.commitdog` in each repository root that controls release build targets and the active platform. You never edit these files by hand during setup — `commitdog setup` creates and updates `config.toml` for you, and `commitdog release config` writes `.commitdog` — but knowing the structure helps you understand what is stored and how to adjust it if needed.
+
+## Global config file
+
+**Location:** `~/.config/commitdog/config.toml`
+
+**Permissions:** `0600` — only your user account can read or write it.
+
+commitdog creates this file the first time you run `commitdog setup`. You can store tokens for all four platforms at the same time; commitdog reads the appropriate section based on which platform a given repository uses.
+
+<Note>
+  commitdog collects zero telemetry. Your tokens and email are written locally to `config.toml` and leave your machine only when commitdog makes a direct API call to the platform you configured (for example, to create a repo or publish a release). No analytics, no pings, no third-party services.
+</Note>
+
+### TOML structure
+
+The file has a single top-level key (`email`) and one section per platform.
+
+| Key | Section | Description |
+|-----|---------|-------------|
+| `email` | _(top-level)_ | Default email used for git commits across all platforms |
+| `token` | `[github]` | GitHub personal access token |
+| `email` | `[github]` | Email override for GitHub (takes precedence over top-level) |
+| `token` | `[gitlab]` | GitLab personal access token |
+| `host` | `[gitlab]` | GitLab instance URL (e.g. `https://gitlab.example.com`) |
+| `email` | `[gitlab]` | Email override for GitLab |
+| `token` | `[gitea]` | Gitea personal access token |
+| `host` | `[gitea]` | Gitea instance URL |
+| `email` | `[gitea]` | Email override for Gitea |
+| `token` | `[forgejo]` | Forgejo personal access token |
+| `host` | `[forgejo]` | Forgejo instance URL |
+| `email` | `[forgejo]` | Email override for Forgejo |
+
+When commitdog needs an email for a platform, it first checks the platform-specific `email` key. If that is not set, it falls back to the top-level `email`. This lets you use different identities on different platforms without affecting your global git config.
+
+### Sample config.toml
+
+```toml
+email = "you@example.com"
+
+[github]
+token = "ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+email = "you@work.com"
+
+[gitlab]
+token = "glpat-xxxxxxxxxxxxxxxxxxxx"
+host = "https://gitlab.example.com"
+email = "you@example.com"
+
+[gitea]
+token = "your-gitea-token"
+host = "https://git.yourcompany.com"
+
+[forgejo]
+token = "your-forgejo-token"
+host = "https://forgejo.yourcompany.com"
+```
+
+<Note>
+  You do not need all four sections. commitdog only writes a section when you configure that platform with `commitdog setup`. Sections for platforms you have not configured will simply be absent.
+</Note>
+
+## Per-repo project config
+
+**Location:** `.commitdog` in your repository root
+
+**Permissions:** `0644`
+
+This file is created by `commitdog release config` and stores which platform the repo uses and which binary targets to build during a release. It is safe to commit this file to your repository.
+
+### File structure
+
+```
+configured = true
+platform = "github"
+targets = ["linux/amd64", "linux/arm64", "darwin/amd64", "darwin/arm64", "windows/amd64"]
+```
+
+| Key | Description |
+|-----|-------------|
+| `configured` | `true` once you have confirmed your release targets |
+| `platform` | The platform this repo is hosted on (`github`, `gitlab`, `gitea`, or `forgejo`) |
+| `targets` | List of OS/architecture pairs to build when running `commitdog release` |
+
+### Available build targets
+
+| Target | Description |
+|--------|-------------|
+| `linux/amd64` | Linux 64-bit (Intel/AMD) |
+| `linux/arm64` | Linux 64-bit (ARM) |
+| `darwin/amd64` | macOS Intel |
+| `darwin/arm64` | macOS Apple Silicon |
+| `windows/amd64` | Windows 64-bit |
+
+Run `commitdog release config` at any time to toggle targets interactively. If you run `commitdog release` without a `.commitdog` file present, commitdog will ask you to configure targets or use the defaults before proceeding.

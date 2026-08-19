@@ -1,0 +1,105 @@
+---
+title: "Commit changes with suggested messages in commitdog"
+sidebarTitle: "commit"
+description: "Stage files and generate up to four commit message suggestions from your diff — no AI, no network call. Pick one, edit it, then push."
+---
+
+Running `commitdog` with no arguments stages all your changes and analyzes the diff to produce four concrete commit message suggestions. The suggestions come entirely from your local code: commitdog reads function names, file types, and directory structure to infer a scope and verb, then generates messages in [Conventional Commits](https://www.conventionalcommits.org/) format. Nothing leaves your machine during this step. Once you pick a message, commitdog commits and asks whether to push.
+
+## Usage
+
+```bash
+commitdog           # stage all changes and suggest messages
+commitdog <file>    # stage a specific file only
+```
+
+## How suggestions are derived
+
+Commitdog analyzes the staged diff directly — no AI and no network call. It extracts:
+
+- **Function names** added or removed (e.g. `addRefreshToken`, `verifyToken`)
+- **File types and directories** to infer a scope (e.g. `auth`, `api`, `db`)
+- **Change pattern** (new file, delete, rename, test-only, config-only, etc.)
+
+It then builds up to four distinct messages ranging from specific (`feat(auth): add refreshToken and verifyToken`) to brief (`feat: update auth module`), capped at 72 characters each.
+
+## Commit flow
+
+<Steps>
+  <Step title="Stage your changes">
+    If nothing is staged, commitdog stages everything automatically:
+
+    ```
+      nothing staged. staging all changes...
+    ```
+
+    To stage a single file instead, pass it as an argument:
+
+    ```bash
+    commitdog auth.go
+    ```
+  </Step>
+
+  <Step title="Secret scan">
+    commitdog silently scans the staged diff for leaked credentials. If it finds something, it shows exactly where and blocks the commit before showing suggestions:
+
+    ```
+      ✗ possible secret detected in staged changes:
+
+      · AWS access key  in config.go
+        var awsKey = "AKIAIOSFODNN7EXAMPLE"
+
+      commit anyway? this will push secrets to your remote. [y/N] ›
+    ```
+
+    <Warning>
+      If a secret is detected, commitdog blocks the commit and prints the file and line. Typing `y` at the prompt overrides the block and will push the secret to your remote. Remove the credential from the file before committing instead. To unstage the file: `git reset HEAD <file>`. To purge a secret already in history, use `git filter-repo` or [BFG Repo Cleaner](https://rtyley.github.io/bfg-repo-cleaner/).
+    </Warning>
+
+    commitdog detects: AWS access and secret keys, GitHub tokens (classic and fine-grained), GitLab tokens, private keys (RSA, EC, DSA, OpenSSH), generic API keys, generic passwords and secrets, Slack tokens, Stripe keys, and Heroku API keys. Test files, mocks, fixtures, and placeholder values are skipped automatically.
+  </Step>
+
+  <Step title="Review suggestions">
+    commitdog displays up to four suggestions derived from your diff:
+
+    ```
+      suggestions:
+      1  feat(auth): add refreshToken and verifyToken
+      2  feat: implement refreshToken in auth
+      3  feat: update auth module
+      4  feat(auth): add refreshToken, add verifyToken — update middleware
+
+      [1/2/3/4] pick, [e] edit, [q] quit ›
+    ```
+
+    Enter a number to pick that message, `e` to edit, or `q` to abort without committing.
+  </Step>
+
+  <Step title="Edit before committing (optional)">
+    Pressing `e` at the suggestion prompt opens the first suggestion for inline editing:
+
+    ```
+      edit message (enter to keep, ctrl+c to abort):
+      > feat(auth): add refreshToken and verifyToken
+      >
+    ```
+
+    Press Enter with an empty line to keep the original message, or type a replacement. The edited message is used as-is.
+  </Step>
+
+  <Step title="Commit and push">
+    After you pick or edit a message, commitdog commits and confirms:
+
+    ```
+      ✓ committed: feat(auth): add refreshToken and verifyToken
+    ```
+
+    It then asks whether to push:
+
+    ```
+      push to origin/main? [Y/n] ›
+    ```
+
+    Press Enter or `y` to push. Enter `n` to skip. If the push fails, commitdog's [auto-recovery](/commands/sync) logic handles common errors like HTTPS auth failure and non-fast-forward rejections.
+  </Step>
+</Steps>

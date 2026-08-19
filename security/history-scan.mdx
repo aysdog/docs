@@ -1,0 +1,84 @@
+---
+title: "Scan commit history for secrets with commitdog secrets"
+sidebarTitle: "History scan"
+description: "commitdog secrets walks every commit across all branches and reports any secrets found, so you can find and remove credentials committed in the past."
+---
+
+The pre-commit scan protects you going forward, but it can't catch secrets that were committed before you started using commitdog. The `commitdog secrets` command scans your full commit history — across every branch — using the same detection patterns as the staged-diff scan, and reports anything it finds along with the commit, file, and exact line.
+
+## Run a history scan
+
+<Steps>
+  <Step title="Run the command">
+    From any directory inside your Git repository, run:
+
+    ```bash
+    commitdog secrets
+    ```
+
+    commitdog reads every commit hash across all branches using `git log --all`.
+  </Step>
+  <Step title="Wait for the scan to complete">
+    commitdog reports how many commits it is checking, then works through each one:
+
+    ```
+      scanning commit history for secrets...
+
+      checking 142 commits...
+    ```
+
+    Scan time scales with the number of commits in your repository.
+  </Step>
+  <Step title="Review the results">
+    If your history is clean, commitdog confirms it:
+
+    ```
+      ✓ no secrets found in history
+    ```
+
+    If secrets are found, commitdog lists each one with the commit hash, commit subject, secret type, file, and the offending line:
+
+    ```
+      ✗ found 2 secrets in history:
+
+      commit a3f92c1  feat(auth): add AWS integration
+      · AWS access key  in config/aws.go
+        var awsKey = "AKIAIOSFODNN7EXAMPLE"
+
+      commit d107be4  chore: initial config
+      · generic secret  in .env.example
+        password="hunter2"
+    ```
+  </Step>
+</Steps>
+
+## What the output shows
+
+Each finding includes:
+
+- **Commit hash** — the short (7-character) hash of the commit that introduced the secret
+- **Commit subject** — the first line of the commit message, so you can identify the change
+- **Secret type** — the category of credential detected (for example, `AWS access key` or `Stripe key`)
+- **File** — the path to the file where the secret appears
+- **Offending line** — the actual line content, truncated to 72 characters if longer
+
+## Removing secrets from history
+
+Finding a secret in history means the credential is already in your remote. Rotate the credential immediately, then rewrite your Git history to remove the secret.
+
+<Note>
+  Two tools are commonly used to rewrite Git history:
+
+  - **git filter-repo** — remove a specific file from all commits:
+    ```bash
+    git filter-repo --path <file> --invert-paths
+    ```
+    Install it from [github.com/newren/git-filter-repo](https://github.com/newren/git-filter-repo).
+
+  - **BFG Repo Cleaner** — a faster alternative for removing secrets or large files from history:
+    [rtyley.github.io/bfg-repo-cleaner](https://rtyley.github.io/bfg-repo-cleaner/)
+
+  After rewriting history you will need to force-push, which rewrites the remote. Coordinate with anyone else working on the repository before doing this.
+</Note>
+
+The history scan uses the same detection patterns as the pre-commit scan. For a full list of what is detected and what is skipped, see [Secret detection](/security/secret-detection).

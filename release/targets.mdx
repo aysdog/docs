@@ -1,0 +1,97 @@
+---
+title: "Configure build targets for commitdog releases"
+sidebarTitle: "Build targets"
+description: "Choose which operating systems and architectures commitdog builds binaries for when you run a release. Config is saved per repository."
+---
+
+When you release a Go project, commitdog compiles a binary for each configured build target before uploading assets to your platform. You control which targets are active using `commitdog release config`, which presents an interactive toggle menu and saves your selection to a `.commitdog` file in the repository root.
+
+## Available targets
+
+commitdog supports five build targets:
+
+| # | Target | Notes |
+|---|--------|-------|
+| 1 | `linux/amd64` | Standard 64-bit Linux |
+| 2 | `linux/arm64` | ARM64 Linux (e.g. Raspberry Pi, AWS Graviton) |
+| 3 | `darwin/amd64` | Intel macOS |
+| 4 | `darwin/arm64` | Apple Silicon macOS |
+| 5 | `windows/amd64` | 64-bit Windows (`.exe`) |
+
+## Configuring targets
+
+<Steps>
+  <Step title="Run the config command">
+    From the root of your repository, run:
+
+    ```bash
+    commitdog release config
+    ```
+  </Step>
+
+  <Step title="Toggle targets in the menu">
+    An interactive menu shows all targets with their current selection state:
+
+    ```
+      select build targets:
+
+      enter numbers separated by spaces, e.g. 1, 2, 3
+
+      1  linux/amd64        ✓
+      2  linux/arm64        ✓
+      3  darwin/amd64        
+      4  darwin/arm64        
+      5  windows/amd64       
+
+      [1-5] toggle, [a] all, [enter] confirm, [q] quit › 3, 4
+    ```
+
+    - Enter one or more numbers separated by spaces or commas to toggle those targets on or off.
+    - Press `a` to toggle all targets at once. If all are currently selected, pressing `a` deselects all; otherwise it selects all.
+    - Press `enter` with no input to confirm your selection.
+    - Press `q` to quit without saving.
+  </Step>
+
+  <Step title="Confirm and save">
+    After you press `enter`, commitdog saves your selection:
+
+    ```
+      ✓ saved to .commitdog
+    ```
+
+    The `.commitdog` file is written to your repository root. You can re-run `commitdog release config` at any time to change the selection.
+  </Step>
+</Steps>
+
+## The `.commitdog` config file
+
+Your target selection is stored in `.commitdog` at the root of your repository. The file uses a simple key-value format:
+
+```toml
+configured = true
+platform = "github"
+targets = ["linux/amd64", "linux/arm64", "darwin/amd64", "darwin/arm64", "windows/amd64"]
+```
+
+Commit this file alongside your code so that everyone working in the repository uses the same release targets.
+
+## First-time prompt
+
+If you run `commitdog release` on a Go project before configuring targets, commitdog pauses and asks once:
+
+```
+  no release targets configured.
+
+  1  configure now
+  2  use defaults and don't ask again
+
+  [1/2/q] pick ›
+```
+
+- Choose `1` to open the interactive config menu immediately.
+- Choose `2` to accept all five targets as defaults and save that choice — commitdog will not ask again.
+- Choose `q` to abort the release.
+
+<Note>
+Build targets only affect Go projects. For Node.js, Rust, Python, Java, and `VERSION`-based projects, commitdog skips the binary build step entirely and no target selection is required.
+</Note>

@@ -1,0 +1,59 @@
+---
+title: "Fastest Git workflow CLI for solo devs and teams."
+sidebarTitle: "Introduction"
+description: "commitdog handles commits, branches, PRs, sync, and releases from one CLI — no AI, no telemetry, and no browser required."
+---
+
+commitdog is a command-line tool that covers your full Git workflow: it suggests commit messages from your actual diff, manages branches interactively, opens and merges pull requests, syncs with auto-recovery, and publishes releases with atomic rollback. It works with GitHub, GitLab, Gitea, and Forgejo — and runs entirely on your machine, with no AI and no telemetry of any kind.
+
+<CardGroup cols={2}>
+  <Card title="Installation" icon="download" href="/installation">
+    Install commitdog on Linux, macOS, or Windows in under a minute.
+  </Card>
+
+  <Card title="Setup" icon="gear" href="/setup">
+    Configure your platform token and email to get started.
+  </Card>
+
+  <Card title="Commit" icon="code-commit" href="/commands/commit">
+    Stage changes and pick a commit message generated from your diff.
+  </Card>
+
+  <Card title="Releases" icon="rocket" href="/release/overview">
+    Bump versions, build binaries, and publish releases with one command.
+  </Card>
+</CardGroup>
+
+## Key features
+
+### Smart commit messages
+
+Running `commitdog` stages your changes, analyzes the diff — function names, file types, scope — and presents four conventional commit message suggestions. No network call is made. Pick one, edit it, or quit.
+
+### Secret detection
+
+Before showing any suggestions, commitdog silently scans your staged diff for leaked credentials. If it finds something — AWS keys, GitHub tokens, private keys, Stripe keys, Slack tokens, generic passwords, and more — it shows you exactly where and blocks the commit. Test files are skipped automatically.
+
+### Branch management
+
+`commitdog branch` gives you an interactive menu to switch, create, and delete branches. `commitdog switch` takes you straight to the branch picker. Branch names can be suggested from your staged diff.
+
+### Sync with auto-recovery
+
+`commitdog sync` runs fetch, pull rebase, and push in sequence. If the push fails — HTTPS auth expired, non-fast-forward, stale remote tag, missing upstream, protected branch — commitdog detects the cause and offers to fix it automatically.
+
+### Pull requests
+
+On a feature branch, `commitdog pr` opens an interactive diff viewer and creates a PR. On main, it lists all open PRs so you can review, merge (merge, squash, or rebase), or close them. The remote branch is deleted after merge.
+
+### Releases with atomic rollback
+
+`commitdog release` detects your project language, lets you choose a semver bump, previews a grouped changelog, builds cross-platform binaries, tags, pushes, and creates a release with checksums — all in one command. Every step registers an undo. If anything fails, commitdog rolls back every completed step in reverse and leaves your repository clean.
+
+### Multi-platform support
+
+All commands work across GitHub, GitLab, Gitea, and Forgejo. You can store tokens for all four platforms at the same time. Per-platform email is applied per-repo via `git config --local` so your global Git config stays untouched.
+
+<Note>
+  commitdog collects zero telemetry — not anonymous pings, not usage stats, nothing. Your data stays on your machine and only leaves it when you explicitly call a platform API.
+</Note>

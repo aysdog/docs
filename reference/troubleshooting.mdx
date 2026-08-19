@@ -1,0 +1,169 @@
+---
+title: "Troubleshoot common commitdog errors and issues"
+sidebarTitle: "Troubleshooting"
+description: "Solutions for common commitdog errors: auth failures, push rejections, stale tags, version drift, token format problems, and more."
+---
+
+Most commitdog errors are recoverable — when something goes wrong during a sync or push, commitdog detects the failure, explains what happened, and often offers to fix it automatically. This page covers the most common error scenarios, what causes them, and what to do when the automatic fix is not available or is not enough.
+
+<Tip>
+  Keep commitdog up to date. Many issues are fixed in newer releases. Run `commitdog --update` to install the latest version — it checks GitHub for the newest release, downloads the correct binary for your platform, and replaces the current binary in place. Your config and saved settings are not affected.
+</Tip>
+
+<AccordionGroup>
+  <Accordion title='"not a git repository"'>
+    **What it means:** You ran a commitdog command in a directory that is not a git repository (no `.git` folder found).
+
+    **Fix:** Either navigate to an existing repository, or start a new one.
+
+    To create a new repository on your platform, initialize it locally, and push the first commit in one step, run:
+
+    ```bash
+    commitdog init
+    ```
+
+    This creates the repository on your configured platform via API, runs `git init`, makes the first commit, sets the remote, and pushes — no browser needed. See [Setup](/setup#start-a-new-repository) for the full flow.
+
+    If you already have a local git repository that you want to connect to an existing remote, add the remote manually with `git remote add origin <url>`.
+  </Accordion>
+
+  <Accordion title="HTTPS authentication failure during push">
+    **What it means:** Git rejected your push because HTTPS password authentication is no longer supported by GitHub (and many other platforms). This typically shows as "authentication failed" or "invalid username or password" in the error output.
+
+    **Fix:** commitdog detects this failure automatically and offers to switch your remote to SSH:
+
+    ```
+      push failed: GitHub no longer supports HTTPS password auth.
+      switch remote to SSH? (git@github.com:you/repo.git) [Y/n] › Y
+      ✓ remote switched to SSH
+      retrying push...
+      ✓ pushed to origin/main
+    ```
+
+    Press Enter (or type `Y`) to accept. commitdog switches the remote URL and retries the push immediately. Make sure you have an SSH key set up and added to your platform account before accepting.
+  </Accordion>
+
+  <Accordion title="Non-fast-forward push rejection">
+    **What it means:** The remote branch has commits that you do not have locally. Git cannot push because it would overwrite those remote commits.
+
+    **Fix:** Run `commitdog sync`. It fetches the latest changes, rebases your local commits on top, and pushes — all in one command:
+
+    ```bash
+    commitdog sync
+    ```
+
+    If the rebase produces conflicts, commitdog detects them and offers to stash your changes, pull, and reapply them automatically.
+  </Accordion>
+
+  <Accordion title="Missing upstream (branch not tracked)">
+    **What it means:** Your local branch has no upstream tracking reference on the remote. This happens when you create a branch locally and push it for the first time without `--set-upstream`.
+
+    **Fix:** Run `commitdog sync`. It detects that the remote branch does not exist yet and automatically pushes with `--set-upstream` to create the tracking reference. You do not need to run any git commands manually.
+
+    ```bash
+    commitdog sync
+    ```
+  </Accordion>
+
+  <Accordion title="Protected branch push rejected">
+    **What it means:** You tried to push directly to a branch that your platform has configured as protected (typically `main` or `master`). Direct pushes to protected branches are blocked by the platform.
+
+    **Fix:** Do your work on a feature branch and open a pull request instead. If you are currently on a protected branch, commitdog detects this and offers to run `commitdog pr` for you automatically.
+
+    To create a feature branch and open a PR manually:
+
+    ```bash
+    commitdog branch create
+    # make your changes, then:
+    commitdog pr
+    ```
+
+    `commitdog pr` on a feature branch opens an interactive diff viewer and creates the pull request on your platform.
+  </Accordion>
+
+  <Accordion title="Stale remote tag during release">
+    **What it means:** The tag you are trying to push already exists on the remote (for example, from a previous failed release attempt). Git rejects the push because the tag conflicts.
+
+    **Fix:** commitdog detects the stale tag and offers to delete it from the remote automatically:
+
+    ```
+      tag v1.2.3 already exists on remote
+      hint: delete the remote tag and retry
+      fix automatically? [Y/n] › Y
+      deleting remote tag v1.2.3...
+      v1.2.3 deleted. run commitdog release again.
+    ```
+
+    After the tag is deleted, run `commitdog release` again to retry from the beginning.
+  </Accordion>
+
+  <Accordion title="Version drift warning">
+    **What it means:** Your version file (for example, the version constant in `main.go`) says one version, but the latest git tag on your repository says another. This usually happens after a partial or failed release.
+
+    **Fix:** commitdog warns you before touching anything:
+
+    ```
+      version drift detected: file says v0.2.8, latest tag is v0.2.9
+    ```
+
+    Resolve the drift by either:
+    - Updating the version file to match the latest tag, then committing, or
+    - Deleting the mismatched tag if it was created by a failed release
+
+    Once the version file and the latest tag agree, run `commitdog release` again.
+  </Accordion>
+
+  <Accordion title="Token validation error (wrong format)">
+    **What it means:** The token you entered during `commitdog setup` does not match the expected format for the platform you selected. commitdog validates token prefixes and rejects tokens that look wrong.
+
+    **Expected formats:**
+
+    | Platform | Expected prefix |
+    |----------|----------------|
+    | GitHub | `ghp_` or `github_pat_` |
+    | GitLab | `glpat-` |
+    | Gitea | _(any non-empty string)_ |
+    | Forgejo | _(any non-empty string)_ |
+
+    **Fix:** Re-run `commitdog setup`, select the correct platform, and paste the token again. Make sure you are copying the full token — some password managers or terminals truncate long strings.
+
+    Create or regenerate your token at the platform's token settings page:
+    - GitHub: `github.com/settings/tokens`
+    - GitLab: `gitlab.com/-/profile/personal_access_tokens`
+    - Gitea / Forgejo: **Settings** → **Applications**
+  </Accordion>
+
+  <Accordion title='"nothing to commit"'>
+    **What it means:** commitdog scanned your staged diff and found no changes to generate a commit message from. This happens when no files have been modified, or when all changes have already been committed.
+
+    **Fix:** Check your working directory for uncommitted changes:
+
+    ```bash
+    git status
+    ```
+
+    If you intended to commit a specific file, pass it directly to commitdog:
+
+    ```bash
+    commitdog path/to/file.go
+    ```
+
+    This stages only that file and proceeds with the commit flow.
+  </Accordion>
+
+  <Accordion title="Checking your commitdog version">
+    Run the following to print the installed version:
+
+    ```bash
+    commitdog --version
+    ```
+
+    To update to the latest release:
+
+    ```bash
+    commitdog --update
+    ```
+
+    On Linux and macOS, commitdog may ask for `sudo` if the binary is installed in a system directory. On Windows, run PowerShell as Administrator if the update fails due to permissions.
+  </Accordion>
+</AccordionGroup>

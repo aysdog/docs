@@ -1,0 +1,81 @@
+---
+title: "Install commitdog on Linux, macOS, and Windows"
+sidebarTitle: "Installation"
+description: "Install commitdog in under a minute using a one-line curl script, Homebrew, the AUR, or a PowerShell command on Windows."
+---
+
+commitdog ships as a single binary with no runtime dependencies. Pick the installation method for your platform below, verify the install, and then move on to [setup](/setup) to configure your platform token.
+
+<Tabs>
+  <Tab title="Linux">
+    Run the install script with curl. It detects your architecture (amd64 or arm64), downloads the correct binary from the latest GitHub release, and installs it to `/usr/local/bin`.
+
+    ```bash
+    curl -fsSL https://aysdog.com/install-commitdog.sh | sh
+    ```
+
+    If you are on **Arch Linux**, you can install from the AUR instead:
+
+    ```bash
+    yay -S commitdog-bin
+    ```
+  </Tab>
+  <Tab title="macOS">
+    You have two options on macOS: the curl script or Homebrew.
+
+    <CodeGroup>
+
+    ```bash curl (recommended)
+    curl -fsSL https://aysdog.com/install-commitdog.sh | sh
+    ```
+
+    ```bash Homebrew
+    brew tap aysdog/commitdog && brew install commitdog
+    ```
+
+    </CodeGroup>
+
+    The curl script works on both Intel (amd64) and Apple Silicon (arm64) Macs. Homebrew keeps commitdog up to date alongside your other packages.
+  </Tab>
+  <Tab title="Windows">
+    Run the following command in a PowerShell terminal. It downloads and installs the commitdog binary for Windows (amd64).
+
+    ```powershell
+    irm https://aysdog.com/install-commitdog.ps1 | iex
+    ```
+  </Tab>
+</Tabs>
+
+## Verify the installation
+
+After installing, confirm that commitdog is on your PATH:
+
+```bash
+commitdog --version
+```
+
+You should see the version number printed to your terminal.
+
+## Next step
+
+Once commitdog is installed, run `commitdog setup` to configure your email and platform token. See [Setup](/setup) for instructions.
+
+---
+
+<Accordion title="Uninstall commitdog">
+  To remove commitdog and its configuration from your machine, run the appropriate commands for your platform.
+
+  <Tabs>
+    <Tab title="Linux / macOS">
+      ```bash
+      rm $(which commitdog) && rm -rf ~/.config/commitdog
+      ```
+    </Tab>
+    <Tab title="Windows">
+      ```powershell
+      Remove-Item "$env:USERPROFILE\AppData\Local\commitdog.exe"
+      Remove-Item -Recurse "$env:APPDATA\commitdog"
+      ```
+    </Tab>
+  </Tabs>
+</Accordion>

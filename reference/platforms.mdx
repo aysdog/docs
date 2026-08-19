@@ -1,0 +1,118 @@
+---
+title: "Supported platforms: GitHub, GitLab, Gitea, Forgejo"
+sidebarTitle: "Platforms"
+description: "Compare commitdog's support for GitHub, GitLab, Gitea, and Forgejo — token requirements, self-hosted setup, and which features each platform supports."
+---
+
+commitdog works with four Git hosting platforms: GitHub, GitLab, Gitea, and Forgejo. Each platform requires a personal access token with specific scopes, and three of the four support self-hosted instances. You configure each platform once with `commitdog setup` and commitdog handles the rest — creating repos, pushing commits, opening pull requests, and publishing releases — all through the platform's API without opening a browser.
+
+## Feature support by platform
+
+| Feature | GitHub | GitLab | Gitea | Forgejo |
+|---------|--------|--------|-------|---------|
+| Commit and push | ✓ | ✓ | ✓ | ✓ |
+| Create repo (`init`) | ✓ | ✓ | ✓ | ✓ |
+| Branch management | ✓ | ✓ | ✓ | ✓ |
+| Sync with auto-recovery | ✓ | ✓ | ✓ | ✓ |
+| Pull requests (`pr`) | ✓ | — | — | — |
+| Releases with assets | ✓ | ✓ | ✓ | ✓ |
+| Self-hosted instance | — | ✓ | ✓ | ✓ |
+
+## Platform details
+
+<Tabs>
+  <Tab title="GitHub">
+    **Token type:** Classic personal access token (PAT)
+
+    **Create a token at:** `github.com/settings/tokens`
+
+    **Required scopes:**
+    - `repo` — full repository access (read/write)
+    - `write:org` — create and manage organization repositories
+    - `read:user` — read your account username
+
+    GitHub tokens must begin with `ghp_` (classic PAT) or `github_pat_` (fine-grained PAT). commitdog validates the prefix during `commitdog setup` and rejects tokens that do not match.
+
+    **Self-hosted:** GitHub Enterprise is not currently supported. commitdog connects to `api.github.com` directly.
+
+    **Releases:** commitdog creates a GitHub Release, uploads all build artifacts as release assets, and generates a `checksums.txt` file.
+
+    **Pull requests:** Supported. On a feature branch, `commitdog pr` opens an interactive diff viewer and creates a PR. On `main`, it lists open PRs for you to review, merge (merge, squash, or rebase), or close.
+  </Tab>
+
+  <Tab title="GitLab">
+    **Token type:** Legacy personal access token
+
+    **Create a token at:** `gitlab.com/-/profile/personal_access_tokens`
+
+    **Required scopes:**
+    - `api` — full API access (required for all operations)
+
+    GitLab tokens must begin with `glpat-`. commitdog validates the prefix during `commitdog setup`.
+
+    **Self-hosted:** Yes. When you configure GitLab, commitdog asks for your instance URL. Press Enter to use `https://gitlab.com`, or paste your self-hosted URL (for example, `https://gitlab.example.com`). The host is saved to your config and used for all API calls.
+
+    **Releases:** commitdog uploads build artifacts to GitLab's Generic Packages registry, then creates a Release with links to those package assets.
+
+    **Merge requests:** Not currently supported. Use your GitLab web interface to open and merge merge requests.
+  </Tab>
+
+  <Tab title="Gitea">
+    **Token type:** Personal access token
+
+    **Create a token at:** Your Gitea instance → **Settings** → **Applications**
+
+    **Required scopes:**
+    - `repository` — read and write access to repositories
+    - `organization` — read and write access to organizations
+    - `user` — read and write access to your user profile
+
+    Gitea does not use a token prefix, so commitdog accepts any non-empty string.
+
+    **Self-hosted:** Yes. Gitea is always self-hosted. When you configure Gitea, commitdog prompts you for your instance URL (for example, `https://git.yourcompany.com`).
+
+    **Releases:** commitdog uploads assets in batches of four to stay within Gitea's API limits, pausing between batches to avoid rate limiting.
+
+    **Pull requests:** Not currently supported. Use your Gitea web interface to open and merge pull requests.
+  </Tab>
+
+  <Tab title="Forgejo">
+    **Token type:** Personal access token
+
+    **Create a token at:** Your Forgejo instance → **Settings** → **Applications**
+
+    **Required scopes:**
+    - `repository` — read and write access to repositories
+    - `organization` — read and write access to organizations
+    - `user` — read and write access to your user profile
+
+    Forgejo's API is compatible with Gitea. commitdog uses the same token format and the same batched upload strategy for releases.
+
+    **Self-hosted:** Yes. When you configure Forgejo, commitdog prompts you for your instance URL.
+
+    **Releases:** commitdog uploads assets in batches of four, with a pause between batches.
+
+    **Pull requests:** Not currently supported. Use your Forgejo web interface to open and merge pull requests.
+  </Tab>
+</Tabs>
+
+## Configuring a platform
+
+Run `commitdog setup` and select the platform you want to configure. You can run `commitdog setup` multiple times to add or update tokens for different platforms — existing tokens for other platforms are not affected.
+
+```bash
+commitdog setup
+```
+
+```
+  which platform token do you want to configure?
+
+  1  github
+  2  gitlab
+  3  gitea
+  4  forgejo
+
+  [1/2/3/4] pick › 
+```
+
+commitdog saves each token to `~/.config/commitdog/config.toml` with `0600` permissions. Your tokens never leave your machine except when commitdog makes an API call to the platform you configured.

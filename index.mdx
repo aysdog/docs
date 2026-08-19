@@ -1,0 +1,57 @@
+---
+title: "commitdog: Git workflow CLI for solo devs and teams"
+description: "commitdog is a fast Git workflow CLI. Stage changes, commit with suggestions, manage branches, sync, open PRs, and publish releases — all from one tool."
+---
+
+commitdog is a command-line tool that removes the friction from everyday Git work. It suggests commit messages from your actual diff, handles branching and PRs, syncs with auto-recovery, and ships releases with atomic rollback — all without AI, without telemetry, and without leaving your terminal. It works with GitHub, GitLab, Gitea, and Forgejo.
+
+<CardGroup cols={2}>
+  <Card title="Installation" icon="download" href="/installation">
+    Install commitdog on Linux, macOS, or Windows in under a minute.
+  </Card>
+  <Card title="Setup" icon="gear" href="/setup">
+    Configure your platform token and email to get started.
+  </Card>
+  <Card title="Commit" icon="code-commit" href="/commands/commit">
+    Stage changes and generate commit messages from your diff.
+  </Card>
+  <Card title="Releases" icon="rocket" href="/release/overview">
+    Bump versions, build binaries, and publish releases with one command.
+  </Card>
+</CardGroup>
+
+## What commitdog does
+
+commitdog covers the full Git workflow — from the first commit to publishing a release:
+
+- **Smart commits** — analyzes your diff and suggests up to 4 conventional commit messages. No network call, no AI.
+- **Secret detection** — silently scans staged changes and blocks commits that contain leaked keys or tokens.
+- **Branch management** — interactive menus for switching, creating, and deleting branches.
+- **Sync** — fetch + rebase + push in one command, with automatic recovery for common failure modes.
+- **Pull requests** — create PRs with a diff preview on feature branches; list, review, and merge on main.
+- **Releases** — detect your project's language, bump semver, build cross-platform binaries, tag, push, and create a release — with full rollback if anything fails.
+- **History scan** — scan your entire commit history for accidentally committed secrets.
+
+<Steps>
+  <Step title="Install commitdog">
+    Run the installer for your platform. See [Installation](/installation) for all options.
+
+    ```bash
+    curl -fsSL https://aysdog.com/install-commitdog.sh | sh
+    ```
+  </Step>
+  <Step title="Configure your platform">
+    Run `commitdog setup` and provide your email and a personal access token for GitHub, GitLab, Gitea, or Forgejo. See [Setup](/setup) for required token scopes.
+
+    ```bash
+    commitdog setup
+    ```
+  </Step>
+  <Step title="Start committing">
+    From any Git repository, run `commitdog` to stage your changes and pick a commit message.
+
+    ```bash
+    commitdog
+    ```
+  </Step>
+</Steps>

@@ -1,0 +1,75 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "name": "commitdog",
+  "theme": "mint",
+  "logo": {
+    "light": "/images/cd-l-light.svg",
+    "dark": "/images/cd-l-d.svg"
+  },
+  "favicon": "/images/logo.svg",
+  "colors": {
+    "primary": "#15803D",
+    "light": "#15803D"
+  },
+  "navbar": {
+    "primary": {
+      "type": "github",
+      "href": "https://github.com/aysdog/commitdog"
+    }
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Docs",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "installation",
+              "setup"
+            ]
+          },
+          {
+            "group": "Core Commands",
+            "pages": [
+              "commands/commit",
+              "commands/branch",
+              "commands/sync",
+              "commands/pr",
+              "commands/stash",
+              "commands/revert"
+            ]
+          },
+          {
+            "group": "Releasing",
+            "pages": [
+              "release/overview",
+              "release/targets",
+              "release/changelog"
+            ]
+          },
+          {
+            "group": "Security",
+            "pages": [
+              "security/secret-detection",
+              "security/history-scan"
+            ]
+          },
+          {
+            "group": "Reference",
+            "pages": [
+              "reference/configuration",
+              "reference/platforms",
+              "reference/troubleshooting"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "fonts": {
+    "family": "Inter"
+  },
+  "description": "Fastest Git workflow CLI for solo devs and teams."
+}

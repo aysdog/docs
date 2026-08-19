@@ -1,0 +1,176 @@
+---
+title: "Configure commitdog with your platform token"
+sidebarTitle: "Setup"
+description: "Run commitdog setup to store your email and personal access token for GitHub, GitLab, Gitea, or Forgejo — once per platform."
+---
+
+Before you can commit, create repos, open PRs, or publish releases, commitdog needs a personal access token for your Git platform. Run `commitdog setup` once per platform — you can store tokens for all four (GitHub, GitLab, Gitea, and Forgejo) at the same time.
+
+<Steps>
+  <Step title="Run the setup command">
+    Open a terminal and run:
+
+    ```bash
+    commitdog setup
+    ```
+
+    commitdog will ask which platform you want to configure:
+
+    ```
+      which platform token do you want to configure?
+
+      1  github
+      2  gitlab
+      3  gitea
+      4  forgejo
+
+      [1/2/3/4] pick › 1
+    ```
+
+    Enter the number for your platform and press Enter.
+  </Step>
+
+  <Step title="Enter your email">
+    commitdog will prompt you for the email address associated with your platform account. This email is applied per-repo via `git config --local` so your global Git config stays untouched.
+
+    If you already have an email saved, commitdog will show it and ask if you want to change it.
+  </Step>
+
+  <Step title="Create and enter your token">
+    commitdog will display where to create your token and which scopes are required (see the platform-specific instructions below). Paste your token at the prompt.
+
+    Token validation runs locally — commitdog checks the token format before saving it.
+  </Step>
+
+  <Step title="Confirm the saved config">
+    After saving, commitdog confirms the location of your config file:
+
+    ```
+      ✓ saved to ~/.config/commitdog/config.toml
+    ```
+
+    Repeat `commitdog setup` for any additional platforms you want to configure.
+  </Step>
+</Steps>
+
+## Token requirements by platform
+
+Create a personal access token on your platform with the scopes listed below, then paste it into the `commitdog setup` prompt.
+
+<Tabs>
+  <Tab title="GitHub">
+    Create a **classic personal access token** at [github.com/settings/tokens](https://github.com/settings/tokens).
+
+    Required scopes:
+
+    | Scope | Purpose |
+    |-------|---------|
+    | `repo` | Read and write access to repositories |
+    | `write:org` | Manage organization resources (required for org repos) |
+    | `read:user` | Read your public profile information |
+
+    <Note>
+      commitdog expects a classic PAT. Fine-grained tokens are not supported. Your token must start with `ghp_` or `github_pat_`.
+    </Note>
+  </Tab>
+  <Tab title="GitLab">
+    Create a **legacy personal access token** at [gitlab.com/-/profile/personal_access_tokens](https://gitlab.com/-/profile/personal_access_tokens).
+
+    Required scope:
+
+    | Scope | Purpose |
+    |-------|---------|
+    | `api` | Full API access (includes repos, releases, and packages) |
+
+    After entering your token, commitdog will ask for your GitLab instance URL. Press Enter to use `https://gitlab.com` or paste a self-hosted URL.
+
+    <Note>
+      Your token must start with `glpat-`.
+    </Note>
+  </Tab>
+  <Tab title="Gitea">
+    Create a personal access token under **Settings → Applications** in your Gitea instance.
+
+    Required permissions (read + write):
+
+    | Permission | Purpose |
+    |------------|---------|
+    | `repository` | Read and write repositories |
+    | `organization` | Manage organization resources |
+    | `user` | Read and write user information |
+
+    After entering your token, commitdog will prompt you for your Gitea instance URL (e.g. `https://git.yourcompany.com`).
+  </Tab>
+  <Tab title="Forgejo">
+    Create a personal access token under **Settings → Applications** in your Forgejo instance.
+
+    Required permissions (read + write):
+
+    | Permission | Purpose |
+    |------------|---------|
+    | `repository` | Read and write repositories |
+    | `organization` | Manage organization resources |
+    | `user` | Read and write user information |
+
+    After entering your token, commitdog will prompt you for your Forgejo instance URL (e.g. `https://git.yourcompany.com`).
+  </Tab>
+</Tabs>
+
+## Where your config is stored
+
+commitdog writes your credentials to:
+
+```
+~/.config/commitdog/config.toml
+```
+
+The file is created with `0600` permissions (readable only by your user). A typical config looks like this:
+
+```toml
+email = "you@example.com"
+
+[github]
+token = "ghp_..."
+email = "you@example.com"
+
+[gitlab]
+token = "glpat-..."
+host = "https://gitlab.com"
+email = "you@example.com"
+```
+
+<Note>
+  Your tokens never leave your machine except when commitdog makes a direct API call to the platform (for example, when creating a repo or publishing a release). No data is sent anywhere else.
+</Note>
+
+## Start a new repository
+
+Once `commitdog setup` is complete, you can create a new repository on your platform and push your first commit — without opening a browser:
+
+```bash
+commitdog init
+```
+
+commitdog connects to your platform using the saved token, asks you to name the repo, choose between private and public, optionally select an organization, then runs `git init`, makes the first commit, sets the remote, and pushes.
+
+```
+  which platform is this repo on?
+
+  1  github
+  2  gitlab
+  3  gitea
+  4  forgejo
+
+  [1/2/3/4] pick › 1
+
+  ✓ connected as alice
+  repo name [my-project] ›
+  private or public? [P/u] ›
+
+  creating repo... ✓ repo created: https://github.com/alice/my-project
+  ✓ committed: feat: initial commit
+  ✓ pushed
+  live at https://github.com/alice/my-project
+```
+
+If a `.commitdog` file already exists in the directory, commitdog reads the platform from it and skips the platform prompt.
