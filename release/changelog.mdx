@@ -2,6 +2,7 @@
 title: "Preview and customize your release changelog"
 sidebarTitle: "Changelog"
 description: "commitdog generates a grouped changelog from your conventional commits since the last tag. Preview it before releasing or use it standalone."
+icon: "history"
 ---
 
 Every `commitdog release` automatically generates a changelog by reading your Git commit messages since the last tag. The changelog is grouped by conventional commit type and included in the release body on GitHub, GitLab, Gitea, and Forgejo. You can also preview the changelog at any time without triggering a release.
@@ -21,7 +22,7 @@ The output is printed directly to your terminal. No version bump, no build, no p
 commitdog reads commit subject lines (the first line of each commit message) between the latest tag and `HEAD`, excluding merge commits. It then classifies each commit by its conventional commit prefix and groups them under the following sections, in this order:
 
 | Section | Matched prefixes |
-|---------|-----------------|
+| --- | --- |
 | Features | `feat:` or `feat(…):` |
 | Bug Fixes | `fix:` or `fix(…):` |
 | Refactoring | `refactor:` or `refactor(…):` |
@@ -35,7 +36,7 @@ Commits that do not follow the `type:` or `type(scope):` convention are placed i
 
 Given a set of commits since the last tag, the output of `commitdog release --changelog-only` looks like this:
 
-```
+```text
 ### Features
 - feat: add gitlab gitea forgejo support
 - feat(auth): add token refresh flow
@@ -53,7 +54,7 @@ The same text is used as the release body when you run `commitdog release` and c
 
 During a normal `commitdog release` run, the changelog preview appears after you pick a version bump and before any changes are made:
 
-```
+```text
   changelog preview:
 
   ### Features
@@ -65,5 +66,5 @@ During a normal `commitdog release` run, the changelog preview appears after you
 If the changelog does not look right, press `n` to abort. Fix or amend the relevant commits, then run `commitdog release` again.
 
 <Tip>
-Write your commit messages in conventional commit format — `feat:`, `fix:`, `chore:`, etc. — to get a clean, well-grouped changelog automatically. commitdog's commit suggestions already follow this format.
+  Write your commit messages in conventional commit format — `feat:`, `fix:`, `chore:`, etc. — to get a clean, well-grouped changelog automatically. commitdog's commit suggestions already follow this format.
 </Tip>

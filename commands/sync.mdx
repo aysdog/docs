@@ -2,6 +2,7 @@
 title: "Sync your local branch with fetch, rebase, and push"
 sidebarTitle: "sync"
 description: "Run fetch, pull rebase, and push in a single command. commitdog auto-stashes local changes and recovers from common push and pull failures automatically."
+icon: "sync-alt"
 ---
 
 `commitdog sync` brings your current branch up to date with the remote and pushes your local commits in one step. It handles unstaged changes automatically by stashing them before the sync and restoring them after. When push or pull fails, commitdog identifies the cause and offers to fix it — switching your remote from HTTPS to SSH, pulling before pushing on a non-fast-forward rejection, or offering to open a PR when pushing to a protected branch.
@@ -18,37 +19,34 @@ commitdog sync
   <Step title="Stash unstaged changes">
     If your working tree has local modifications, commitdog offers to stash them before syncing:
 
-    ```
+    ```text
       you have unstaged changes. stash them first? [Y/n] ›
     ```
 
     Press Enter or `y` to stash. commitdog pops the stash automatically after the sync completes, whether or not the sync succeeded.
   </Step>
-
   <Step title="Fetch">
     commitdog runs a fetch from your primary remote to update remote-tracking references:
 
-    ```
+    ```text
       fetching... done
     ```
   </Step>
-
   <Step title="Pull with rebase">
     commitdog pulls the current branch using rebase (not merge) to keep history linear:
 
-    ```
+    ```text
       pulling (rebase)... done
     ```
 
     If the branch is already up to date, it prints `already up to date` and continues to the push step.
   </Step>
-
   <Step title="Push">
     commitdog pushes the current branch to the remote. If the branch has no upstream tracking reference yet, it sets one automatically:
 
-    ```
+    ```text
       pushing... done
-
+    
       ✓ origin/main is in sync
     ```
   </Step>
@@ -62,7 +60,7 @@ When fetch, pull, or push fails, commitdog inspects the error message and offers
   <Accordion title="HTTPS auth failure → switch remote to SSH">
     When GitHub rejects HTTPS password authentication, commitdog detects the error and offers to rewrite your remote URL to SSH and retry:
 
-    ```
+    ```text
       push failed: GitHub no longer supports HTTPS password auth.
       switch remote to SSH? (git@github.com:you/repo.git) [Y/n] › Y
       ✓ remote switched to SSH
@@ -74,7 +72,7 @@ When fetch, pull, or push fails, commitdog inspects the error message and offers
   <Accordion title="Non-fast-forward rejection">
     When the remote has commits you do not have locally, commitdog automatically pulls with rebase and retries the push:
 
-    ```
+    ```text
       ✗ remote has new commits you don't have locally
       hint: pull first, then push
       fix automatically? [Y/n] ›
@@ -86,7 +84,7 @@ When fetch, pull, or push fails, commitdog inspects the error message and offers
   <Accordion title="Stale remote tag">
     When a release tag already exists on the remote (typically from a partial release run), commitdog detects the conflict, deletes the stale remote tag, and asks you to re-run the command:
 
-    ```
+    ```text
       ✗ tag v0.2.9 already exists on remote
       hint: delete the remote tag and retry
       fix automatically? [Y/n] ›
@@ -100,7 +98,7 @@ When fetch, pull, or push fails, commitdog inspects the error message and offers
   <Accordion title="Push to a protected branch">
     When the remote rejects a direct push because the branch is protected, commitdog surfaces the error and offers to open the PR flow instead:
 
-    ```
+    ```text
       ✗ this branch is protected — direct push not allowed
       hint: create a PR instead
       fix automatically? [Y/n] ›

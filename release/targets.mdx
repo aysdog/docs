@@ -2,6 +2,7 @@
 title: "Configure build targets for commitdog releases"
 sidebarTitle: "Build targets"
 description: "Choose which operating systems and architectures commitdog builds binaries for when you run a release. Config is saved per repository."
+icon: "box-circle-check"
 ---
 
 When you release a Go project, commitdog compiles a binary for each configured build target before uploading assets to your platform. You control which targets are active using `commitdog release config`, which presents an interactive toggle menu and saves your selection to a `.commitdog` file in the repository root.
@@ -11,7 +12,7 @@ When you release a Go project, commitdog compiles a binary for each configured b
 commitdog supports five build targets:
 
 | # | Target | Notes |
-|---|--------|-------|
+| --- | --- | --- |
 | 1 | `linux/amd64` | Standard 64-bit Linux |
 | 2 | `linux/arm64` | ARM64 Linux (e.g. Raspberry Pi, AWS Graviton) |
 | 3 | `darwin/amd64` | Intel macOS |
@@ -28,21 +29,20 @@ commitdog supports five build targets:
     commitdog release config
     ```
   </Step>
-
   <Step title="Toggle targets in the menu">
     An interactive menu shows all targets with their current selection state:
 
-    ```
+    ```text
       select build targets:
-
+    
       enter numbers separated by spaces, e.g. 1, 2, 3
-
+    
       1  linux/amd64        ✓
       2  linux/arm64        ✓
       3  darwin/amd64        
       4  darwin/arm64        
       5  windows/amd64       
-
+    
       [1-5] toggle, [a] all, [enter] confirm, [q] quit › 3, 4
     ```
 
@@ -51,11 +51,10 @@ commitdog supports five build targets:
     - Press `enter` with no input to confirm your selection.
     - Press `q` to quit without saving.
   </Step>
-
   <Step title="Confirm and save">
     After you press `enter`, commitdog saves your selection:
 
-    ```
+    ```text
       ✓ saved to .commitdog
     ```
 
@@ -79,7 +78,7 @@ Commit this file alongside your code so that everyone working in the repository 
 
 If you run `commitdog release` on a Go project before configuring targets, commitdog pauses and asks once:
 
-```
+```text
   no release targets configured.
 
   1  configure now
@@ -93,5 +92,5 @@ If you run `commitdog release` on a Go project before configuring targets, commi
 - Choose `q` to abort the release.
 
 <Note>
-Build targets only affect Go projects. For Node.js, Rust, Python, Java, and `VERSION`-based projects, commitdog skips the binary build step entirely and no target selection is required.
+  Build targets only affect Go projects. For Node.js, Rust, Python, Java, and `VERSION`-based projects, commitdog skips the binary build step entirely and no target selection is required.
 </Note>

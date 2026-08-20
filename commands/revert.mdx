@@ -2,6 +2,7 @@
 title: "Revert recent commits safely with commitdog revert"
 sidebarTitle: "revert"
 description: "Pick from your last five commits and create a revert commit that undoes the selected change, then push — without rewriting history."
+icon: "redo-alt"
 ---
 
 `commitdog revert` lets you undo a recent commit safely. Rather than rewriting history, it creates a new revert commit that reverses the changes from the commit you select. You pick from the five most recent commits in an interactive list, confirm, and commitdog handles the rest — including prompting you to push afterward. If a revert is already in progress (due to conflicts from a previous run), commitdog detects it and lets you continue or abort.
@@ -18,52 +19,49 @@ commitdog revert
   <Step title="Stash unstaged changes (if needed)">
     If your working tree has local modifications, commitdog offers to stash them before reverting so the operation starts from a clean state:
 
-    ```
+    ```text
       you have unstaged changes. stash them first? [Y/n] ›
     ```
 
     The stash is popped automatically after the revert completes.
   </Step>
-
   <Step title="Pick a commit to revert">
     commitdog lists the five most recent commits with their short hash, subject, and relative date:
 
-    ```
+    ```text
       recent commits:
-
+    
       1  a3f9c12  feat(auth): add refreshToken and verifyToken  (2 hours ago)
       2  bb01e44  fix: resolve session timeout on logout         (yesterday)
       3  c190d87  chore: update dependencies                     (3 days ago)
       4  d45a001  docs: add API reference                        (4 days ago)
       5  e88b3f2  feat: initial project setup                    (5 days ago)
-
+    
       [1-5] pick, [e] enter hash, [q] quit ›
     ```
 
     Enter a number to select that commit, `e` to type a commit hash manually (7–40 hex characters), or `q` to abort.
   </Step>
-
   <Step title="Confirm the revert">
     commitdog shows which commit you are about to revert and asks for confirmation:
 
-    ```
+    ```text
       reverting a3f9c12 — feat(auth): add refreshToken and verifyToken
       ⚠  this creates a new revert commit. continue? [Y/n] ›
     ```
 
     Press Enter or `y` to proceed.
   </Step>
-
   <Step title="Revert commit is created">
     commitdog runs the revert and confirms:
 
-    ```
+    ```text
       ✓ reverted a3f9c12
     ```
 
     It then asks whether to push the revert commit:
 
-    ```
+    ```text
       push to origin/main? [Y/n] ›
     ```
   </Step>
@@ -73,7 +71,7 @@ commitdog revert
 
 If you select a merge commit, commitdog asks which parent to revert to:
 
-```
+```text
   ⚠  this is a merge commit. which side do you want to revert to?
 
   1  main  (before the merge — undo it entirely)
@@ -88,7 +86,7 @@ Pick `1` to undo the merge entirely (the most common choice) or `2` to revert to
 
 If the revert produces conflicts, commitdog exits with instructions:
 
-```
+```text
   ✗ revert has conflicts — resolve them manually:
 
     1. fix the conflicting files
@@ -100,7 +98,7 @@ If the revert produces conflicts, commitdog exits with instructions:
 
 The next time you run `commitdog revert` while a revert is in progress, commitdog detects the state and offers to continue or abort:
 
-```
+```text
   a revert is already in progress.
 
   [c] continue  [a] abort  [q] quit ›

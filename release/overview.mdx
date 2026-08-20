@@ -2,6 +2,7 @@
 title: "Publish releases with the commitdog release command"
 sidebarTitle: "Overview"
 description: "Bump your version, build binaries, create a tagged release, and upload assets — all in one command, with atomic rollback if anything goes wrong."
+icon: "cube"
 ---
 
 `commitdog release` handles the entire release workflow for you. It detects your project's language, reads the current version, lets you pick a semver bump, shows you a changelog preview, and then executes every step — version bump, binary builds, commit, tag, push, and release creation — in sequence. If any step fails, commitdog rolls back every completed step in reverse so your repository is always left in a clean state.
@@ -11,7 +12,7 @@ description: "Bump your version, build binaries, create a tagged release, and up
 When you run `commitdog release`, it scans your repository root for a version file in this order:
 
 | Language | File | Pattern |
-|----------|------|---------|
+| --- | --- | --- |
 | Go | `main.go` | `const version = "x.y.z"` |
 | Node.js | `package.json` | `"version": "x.y.z"` |
 | Rust | `Cargo.toml` | `version = "x.y.z"` |
@@ -34,71 +35,66 @@ If no version file is found, commitdog offers to create one for you before proce
 
     commitdog verifies you are inside a Git repository and that a platform token is configured. If you have not run `commitdog setup` yet, it will exit with a prompt to do so.
   </Step>
-
   <Step title="Detect or initialize a version file">
     commitdog scans for a supported version file. If it finds one, it reads the current version and continues. If none is found, you are offered four options:
 
-    ```
+    ```text
       could not find a version file.
-
+    
       1  create pyproject.toml  (recommended for Python)
       2  add __version__ to main python file
       3  create VERSION file     (works for any language)
       4  enter version manually  (one time, no file created)
-
+    
       [1/2/3/4/q] pick ›
     ```
 
     Options 1–3 create a file starting at `0.1.0`. Option 4 accepts a one-time semver string without writing any file.
   </Step>
-
   <Step title="Check for version drift">
     If a latest Git tag exists and it does not match the version in your file, commitdog warns you before touching anything:
 
-    ```
+    ```text
       ! version drift: main.go says v0.2.8 but latest git tag is v0.2.9
       release anyway? [y/N] ›
     ```
 
     Fix the mismatch or confirm to continue.
   </Step>
-
   <Step title="Pick a version bump">
     commitdog displays your current version and the three standard bump options:
 
-    ```
+    ```text
       detected: Go  ·  current version: v0.2.8
-
+    
       1  patch  →  v0.2.9
       2  minor  →  v0.3.0
       3  major  →  v1.0.0
       4  custom
-
+    
       [1/2/3/4/q] pick ›
     ```
 
     Choose `4` to enter any valid semver string manually.
   </Step>
-
   <Step title="Review the changelog preview">
     Before any changes are made, commitdog shows a grouped changelog of all commits since the last tag:
 
-    ```
+    ```text
       changelog preview:
-
+    
       ### Features
       - feat: add gitlab gitea forgejo support
-
+    
       release v0.2.8 → v0.2.9? [y/n] ›
     ```
 
     Confirm with `y` to proceed, or `n` to abort without making any changes.
   </Step>
-
   <Step title="Execute the release steps">
     Once confirmed, commitdog runs every step and prints live status:
 
-    ```
+    ```text
       bumping version in main.go...              ✓
       building linux/amd64...                    ✓
       building linux/arm64...                    ✓
@@ -115,7 +111,7 @@ If no version file is found, commitdog offers to create one for you before proce
       uploading commitdog-darwin-arm64...        ✓
       uploading commitdog-windows-amd64.exe...   ✓
       uploading checksums.txt...                 ✓
-
+    
       ✓ v0.2.9 released
       https://github.com/aysdog/commitdog/releases/tag/v0.2.9
     ```
@@ -125,7 +121,7 @@ If no version file is found, commitdog offers to create one for you before proce
 </Steps>
 
 <Note>
-**Atomic rollback** — every completed step registers an undo function before the next step runs. If anything fails — a network cut, an API error, a build failure — commitdog rolls back every completed step in reverse order. Your repository is always left clean. After a rollback, fix the underlying issue and run `commitdog release` again.
+  **Atomic rollback** — every completed step registers an undo function before the next step runs. If anything fails — a network cut, an API error, a build failure — commitdog rolls back every completed step in reverse order. Your repository is always left clean. After a rollback, fix the underlying issue and run `commitdog release` again.
 </Note>
 
 ## Platform-specific behavior

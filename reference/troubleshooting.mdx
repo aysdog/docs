@@ -2,6 +2,7 @@
 title: "Troubleshoot common commitdog errors and issues"
 sidebarTitle: "Troubleshooting"
 description: "Solutions for common commitdog errors: auth failures, push rejections, stale tags, version drift, token format problems, and more."
+icon: "lightbulb-gear"
 ---
 
 Most commitdog errors are recoverable — when something goes wrong during a sync or push, commitdog detects the failure, explains what happened, and often offers to fix it automatically. This page covers the most common error scenarios, what causes them, and what to do when the automatic fix is not available or is not enough.
@@ -32,7 +33,7 @@ Most commitdog errors are recoverable — when something goes wrong during a syn
 
     **Fix:** commitdog detects this failure automatically and offers to switch your remote to SSH:
 
-    ```
+    ```text
       push failed: GitHub no longer supports HTTPS password auth.
       switch remote to SSH? (git@github.com:you/repo.git) [Y/n] › Y
       ✓ remote switched to SSH
@@ -86,7 +87,7 @@ Most commitdog errors are recoverable — when something goes wrong during a syn
 
     **Fix:** commitdog detects the stale tag and offers to delete it from the remote automatically:
 
-    ```
+    ```text
       tag v1.2.3 already exists on remote
       hint: delete the remote tag and retry
       fix automatically? [Y/n] › Y
@@ -102,11 +103,12 @@ Most commitdog errors are recoverable — when something goes wrong during a syn
 
     **Fix:** commitdog warns you before touching anything:
 
-    ```
+    ```text
       version drift detected: file says v0.2.8, latest tag is v0.2.9
     ```
 
     Resolve the drift by either:
+
     - Updating the version file to match the latest tag, then committing, or
     - Deleting the mismatched tag if it was created by a failed release
 
@@ -119,7 +121,7 @@ Most commitdog errors are recoverable — when something goes wrong during a syn
     **Expected formats:**
 
     | Platform | Expected prefix |
-    |----------|----------------|
+    | --- | --- |
     | GitHub | `ghp_` or `github_pat_` |
     | GitLab | `glpat-` |
     | Gitea | _(any non-empty string)_ |
@@ -128,6 +130,7 @@ Most commitdog errors are recoverable — when something goes wrong during a syn
     **Fix:** Re-run `commitdog setup`, select the correct platform, and paste the token again. Make sure you are copying the full token — some password managers or terminals truncate long strings.
 
     Create or regenerate your token at the platform's token settings page:
+
     - GitHub: `github.com/settings/tokens`
     - GitLab: `gitlab.com/-/profile/personal_access_tokens`
     - Gitea / Forgejo: **Settings** → **Applications**

@@ -2,6 +2,7 @@
 title: "commitdog configuration file reference"
 sidebarTitle: "Configuration"
 description: "Learn where commitdog stores its config, how the TOML file is structured, and how to configure per-platform tokens, emails, and release targets."
+icon: "display"
 ---
 
 commitdog stores all credentials and preferences in two files: a global config at `~/.config/commitdog/config.toml` that holds your platform tokens and email addresses, and an optional per-repo file called `.commitdog` in each repository root that controls release build targets and the active platform. You never edit these files by hand during setup — `commitdog setup` creates and updates `config.toml` for you, and `commitdog release config` writes `.commitdog` — but knowing the structure helps you understand what is stored and how to adjust it if needed.
@@ -23,7 +24,7 @@ commitdog creates this file the first time you run `commitdog setup`. You can st
 The file has a single top-level key (`email`) and one section per platform.
 
 | Key | Section | Description |
-|-----|---------|-------------|
+| --- | --- | --- |
 | `email` | _(top-level)_ | Default email used for git commits across all platforms |
 | `token` | `[github]` | GitHub personal access token |
 | `email` | `[github]` | Email override for GitHub (takes precedence over top-level) |
@@ -76,14 +77,14 @@ This file is created by `commitdog release config` and stores which platform the
 
 ### File structure
 
-```
+```text
 configured = true
 platform = "github"
 targets = ["linux/amd64", "linux/arm64", "darwin/amd64", "darwin/arm64", "windows/amd64"]
 ```
 
 | Key | Description |
-|-----|-------------|
+| --- | --- |
 | `configured` | `true` once you have confirmed your release targets |
 | `platform` | The platform this repo is hosted on (`github`, `gitlab`, `gitea`, or `forgejo`) |
 | `targets` | List of OS/architecture pairs to build when running `commitdog release` |
@@ -91,7 +92,7 @@ targets = ["linux/amd64", "linux/arm64", "darwin/amd64", "darwin/arm64", "window
 ### Available build targets
 
 | Target | Description |
-|--------|-------------|
+| --- | --- |
 | `linux/amd64` | Linux 64-bit (Intel/AMD) |
 | `linux/arm64` | Linux 64-bit (ARM) |
 | `darwin/amd64` | macOS Intel |

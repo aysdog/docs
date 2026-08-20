@@ -2,6 +2,7 @@
 title: "Manage Git branches with commitdog branch commands"
 sidebarTitle: "branch"
 description: "Create, switch, delete, list, and merge branches through an interactive menu — with diff previews, merge-status warnings, and remote sync."
+icon: "code-branch"
 ---
 
 `commitdog branch` gives you an interactive menu for all common branch operations. Each subcommand is also available directly so you can jump straight to what you need without going through the menu. Branch names are validated before any git operation runs, and `main` and `master` are protected from deletion in all cases.
@@ -9,7 +10,7 @@ description: "Create, switch, delete, list, and merge branches through an intera
 ## Commands
 
 | Command | What it does |
-|---------|-------------|
+| --- | --- |
 | `commitdog branch` | Interactive menu: switch, create, or delete |
 | `commitdog switch` | Jump straight to the branch switcher |
 | `commitdog branch create` | Create a new branch with an optional base |
@@ -21,7 +22,7 @@ description: "Create, switch, delete, list, and merge branches through an intera
 
 Running `commitdog branch` without any subcommand shows a numbered menu:
 
-```
+```text
   branch:
 
   1  switch
@@ -37,7 +38,7 @@ Pick a number to enter that flow, or `q` to quit.
 
 `commitdog switch` jumps directly to the branch switcher. It shows your current branch and up to five other recent branches by number, plus an `e` option to type a name:
 
-```
+```text
   branches:
 
   → main (current)
@@ -55,7 +56,7 @@ Pick a number to switch, `e` to type a branch name manually, or `q` to quit.
 
 `commitdog branch create` suggests branch names if you have staged changes. Names are derived from the same diff analysis used for commit messages — added function names, file names, and the inferred scope:
 
-```
+```text
   suggested branch names:
 
   1  feat/refresh-token
@@ -67,13 +68,13 @@ Pick a number to switch, `e` to type a branch name manually, or `q` to quit.
 
 After picking or entering a name, commitdog asks for a base branch (defaults to your current branch):
 
-```
+```text
   base branch? [enter = main] ›
 ```
 
 Once the branch is created and you are switched to it, commitdog asks whether to push the new branch to the remote:
 
-```
+```text
   push feat/refresh-token to origin? [Y/n] ›
 ```
 
@@ -86,7 +87,7 @@ commitdog branch create
 
 `commitdog branch delete` lists all branches that can be deleted — the current branch, `main`, and `master` are never shown. Each branch is labeled `(merged)` or `(unmerged)` so you know its status at a glance:
 
-```
+```text
   select branch to delete:
 
   1  feat/refresh-token  (merged)
@@ -97,14 +98,14 @@ commitdog branch create
 
 Selecting an unmerged branch triggers an extra confirmation warning:
 
-```
+```text
   ⚠ fix/old-bug has unmerged commits.
   delete anyway? this cannot be undone. [y/N] ›
 ```
 
 If the branch exists on the remote, commitdog then asks whether to delete it there too:
 
-```
+```text
   delete fix/old-bug from origin too? [y/N] ›
 ```
 
@@ -117,7 +118,7 @@ commitdog branch delete
 
 `commitdog branch ls` prints all local and remote branches. Your current branch is highlighted with an arrow:
 
-```
+```text
   branches:
 
   → main (current)
@@ -135,7 +136,7 @@ commitdog branch ls
 
 `commitdog merge` lists all other branches and shows how many lines and files each one adds relative to your current branch. Branches with potential merge conflicts are flagged:
 
-```
+```text
   merge into main:
 
   1  feat/refresh-token    +120  -5    3 files   clean
@@ -146,7 +147,7 @@ commitdog branch ls
 
 After picking a branch, commitdog prints per-file stats and presents three options:
 
-```
+```text
   [1] merge   [2] view diff   [3] cancel ›
 ```
 

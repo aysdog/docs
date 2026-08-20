@@ -2,6 +2,7 @@
 title: "Create and review GitHub pull requests with commitdog pr"
 sidebarTitle: "pull request"
 description: "Open PRs from feature branches with a diff viewer, or list, review, and merge open PRs from main — all from the terminal. GitHub only."
+icon: "code-pull-request"
 ---
 
 `commitdog pr` does different things depending on which branch you are on. On a feature branch it walks you through creating a pull request: you review a diff, enter a title and description, and commitdog creates the PR and opens it in your browser. On `main` or `master` it fetches all open PRs, lets you navigate them with keyboard shortcuts, view their diffs, and merge or close them without leaving the terminal.
@@ -26,27 +27,25 @@ The behavior is determined automatically by your current branch.
       <Step title="Review the diff">
         commitdog shows an interactive list of files changed between your branch and the base branch, with insertion and deletion counts for each file. Navigate with `j`/`k` or the arrow keys and press `d` to view the inline diff for any file. Press `q` to proceed.
       </Step>
-
       <Step title="Enter a title and description">
         commitdog pre-fills the title with your last commit subject. Press Enter to accept it or type a replacement. The description is optional.
 
-        ```
+        ```text
           creating PR: feat/auth → main
-
+        
           title › feat(auth): add refreshToken and verifyToken
           description (optional) ›
-
+        
           [enter] confirm  [q] cancel ›
         ```
       </Step>
-
       <Step title="PR is created and opened">
         commitdog calls the GitHub API and prints the PR number and URL:
 
-        ```
+        ```text
           ✓ PR #42 created
           https://github.com/you/repo/pull/42
-
+        
           open in browser? [Y/n] ›
         ```
 
@@ -54,15 +53,14 @@ The behavior is determined automatically by your current branch.
       </Step>
     </Steps>
   </Tab>
-
   <Tab title="Main branch">
     ## Reviewing PRs
 
     When you run `commitdog pr` on `main` or `master`, commitdog fetches all open PRs and displays them in a scrollable list:
 
-    ```
+    ```text
       open PRs — you/repo
-
+    
     › #42   feat/auth       → main       feat(auth): add refreshToken...   @alice
       #38   fix/login-bug   → main       fix: resolve session timeout...   @bob
     ```
@@ -70,7 +68,7 @@ The behavior is determined automatically by your current branch.
     ### Keyboard shortcuts
 
     | Key | Action |
-    |-----|--------|
+    | --- | --- |
     | `j` or `↓` | Move selection down |
     | `k` or `↑` | Move selection up |
     | `d` | View the diff for the selected PR |
@@ -81,27 +79,27 @@ The behavior is determined automatically by your current branch.
 
     Pressing `m` on a selected PR opens the merge method picker:
 
-    ```
+    ```text
       merge PR #42 — feat(auth): add refreshToken and verifyToken
-
+    
       1  merge commit
       2  squash merge
       3  rebase merge
-
+    
       [1/2/3] pick ›
     ```
 
     After merging, commitdog asks whether to delete the feature branch:
 
-    ```
+    ```text
       ✓ merged PR #42 into main
-
+    
       delete feat/auth branch? [Y/n] ›
     ```
 
     Selecting yes deletes both the remote branch (via the GitHub API) and the local branch. commitdog then checks out the base branch and pulls the latest changes automatically:
 
-    ```
+    ```text
       pulling main...
       ✓ up to date
     ```
