@@ -1,7 +1,7 @@
 ---
 title: "Sync your local branch with fetch, rebase, and push"
 sidebarTitle: "sync"
-description: "Run fetch, pull rebase, and push in a single command. Commitdog auto-stashes local changes and recovers from common push and pull failures automatically."
+description: "Run fetch, pull rebase, and push in a single command. commitdog auto-stashes local changes and recovers from common push and pull failures automatically."
 ---
 
 `commitdog sync` brings your current branch up to date with the remote and pushes your local commits in one step. It handles unstaged changes automatically by stashing them before the sync and restoring them after. When push or pull fails, commitdog identifies the cause and offers to fix it — switching your remote from HTTPS to SSH, pulling before pushing on a non-fast-forward rejection, or offering to open a PR when pushing to a protected branch.
@@ -22,11 +22,11 @@ commitdog sync
       you have unstaged changes. stash them first? [Y/n] ›
     ```
 
-    Press Enter or `y` to stash. Commitdog pops the stash automatically after the sync completes, whether or not the sync succeeded.
+    Press Enter or `y` to stash. commitdog pops the stash automatically after the sync completes, whether or not the sync succeeded.
   </Step>
 
   <Step title="Fetch">
-    Commitdog runs a fetch from your primary remote to update remote-tracking references:
+    commitdog runs a fetch from your primary remote to update remote-tracking references:
 
     ```
       fetching... done
@@ -34,7 +34,7 @@ commitdog sync
   </Step>
 
   <Step title="Pull with rebase">
-    Commitdog pulls the current branch using rebase (not merge) to keep history linear:
+    commitdog pulls the current branch using rebase (not merge) to keep history linear:
 
     ```
       pulling (rebase)... done
@@ -44,7 +44,7 @@ commitdog sync
   </Step>
 
   <Step title="Push">
-    Commitdog pushes the current branch to the remote. If the branch has no upstream tracking reference yet, it sets one automatically:
+    commitdog pushes the current branch to the remote. If the branch has no upstream tracking reference yet, it sets one automatically:
 
     ```
       pushing... done
