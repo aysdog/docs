@@ -2,7 +2,7 @@
 title: "commitdog configuration file reference"
 sidebarTitle: "Configuration"
 description: "Learn where commitdog stores its config, how the TOML file is structured, and how to configure per-platform tokens, emails, and release targets."
-icon: "display"
+icon: "settings"
 ---
 
 commitdog stores all credentials and preferences in two files: a global config at `~/.config/commitdog/config.toml` that holds your platform tokens and email addresses, and an optional per-repo file called `.commitdog` in each repository root that controls release build targets and the active platform. You never edit these files by hand during setup — `commitdog setup` creates and updates `config.toml` for you, and `commitdog release config` writes `.commitdog` — but knowing the structure helps you understand what is stored and how to adjust it if needed.

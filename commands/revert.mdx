@@ -2,7 +2,7 @@
 title: "Revert recent commits safely with commitdog revert"
 sidebarTitle: "revert"
 description: "Pick from your last five commits and create a revert commit that undoes the selected change, then push — without rewriting history."
-icon: "redo-alt"
+icon: "redo-2"
 ---
 
 `commitdog revert` lets you undo a recent commit safely. Rather than rewriting history, it creates a new revert commit that reverses the changes from the commit you select. You pick from the five most recent commits in an interactive list, confirm, and commitdog handles the rest — including prompting you to push afterward. If a revert is already in progress (due to conflicts from a previous run), commitdog detects it and lets you continue or abort.

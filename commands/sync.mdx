@@ -2,7 +2,7 @@
 title: "Sync your local branch with fetch, rebase, and push"
 sidebarTitle: "sync"
 description: "Run fetch, pull rebase, and push in a single command. commitdog auto-stashes local changes and recovers from common push and pull failures automatically."
-icon: "sync-alt"
+icon: "repeat-2"
 ---
 
 `commitdog sync` brings your current branch up to date with the remote and pushes your local commits in one step. It handles unstaged changes automatically by stashing them before the sync and restoring them after. When push or pull fails, commitdog identifies the cause and offers to fix it — switching your remote from HTTPS to SSH, pulling before pushing on a non-fast-forward rejection, or offering to open a PR when pushing to a protected branch.
