@@ -2,13 +2,8 @@
   "$schema": "https://mintlify.com/docs.json",
   "name": "commitdog",
   "theme": "mint",
-  "logo": {
-    "light": "/images/cd-l-light.svg",
-    "dark": "/images/cd-l-d.svg"
-  },
-  "favicon": "/images/logo.svg",
   "colors": {
-    "primary": "#15803D",
+    "primary": "#feb320",
     "light": "#15803D"
   },
   "navbar": {
@@ -69,7 +64,7 @@
     ]
   },
   "fonts": {
-    "family": "Inter"
+    "family": "Source Sans Pro"
   },
   "description": "Fastest Git workflow CLI for solo devs and teams."
 }
