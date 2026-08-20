@@ -3,8 +3,8 @@
   "name": "commitdog",
   "theme": "mint",
   "colors": {
-    "primary": "#feb320",
-    "light": "#15803D"
+    "primary": "#FEB300",
+    "light": "#FEB300"
   },
   "navbar": {
     "primary": {
@@ -13,52 +13,47 @@
     }
   },
   "navigation": {
-    "tabs": [
+    "groups": [
       {
-        "tab": "Docs",
-        "groups": [
-          {
-            "group": "Get Started",
-            "pages": [
-              "introduction",
-              "installation",
-              "setup"
-            ]
-          },
-          {
-            "group": "Core Commands",
-            "pages": [
-              "commands/commit",
-              "commands/branch",
-              "commands/sync",
-              "commands/pr",
-              "commands/stash",
-              "commands/revert"
-            ]
-          },
-          {
-            "group": "Releasing",
-            "pages": [
-              "release/overview",
-              "release/targets",
-              "release/changelog"
-            ]
-          },
-          {
-            "group": "Security",
-            "pages": [
-              "security/secret-detection",
-              "security/history-scan"
-            ]
-          },
-          {
-            "group": "Reference",
-            "pages": [
-              "reference/configuration",
-              "reference/platforms",
-              "reference/troubleshooting"
-            ]
-          }
+        "group": "Get Started",
+        "pages": [
+          "introduction",
+          "installation",
+          "setup"
+        ]
+      },
+      {
+        "group": "Core Commands",
+        "pages": [
+          "commands/commit",
+          "commands/branch",
+          "commands/sync",
+          "commands/pr",
+          "commands/stash",
+          "commands/revert"
+        ]
+      },
+      {
+        "group": "Releasing",
+        "pages": [
+          "release/overview",
+          "release/targets",
+          "release/changelog"
+        ]
+      },
+      {
+        "group": "Security",
+        "pages": [
+          "security/secret-detection",
+          "security/history-scan"
+        ]
+      },
+      {
+        "group": "Reference",
+        "pages": [
+          "reference/configuration",
+          "reference/platforms",
+          "reference/troubleshooting"
         ]
       }
     ]
@@ -66,5 +61,13 @@
   "fonts": {
     "family": "Source Sans Pro"
   },
-  "description": "Fastest Git workflow CLI for solo devs and teams."
+  "description": "Fastest Git workflow CLI for solo devs and teams.",
+  "logo": {
+    "light": "/images/logo.svg",
+    "dark": "/images/logo.svg"
+  },
+  "favicon": {
+    "light": "/images/favicon.ico",
+    "dark": "/images/favicon.ico"
+  }
 }
