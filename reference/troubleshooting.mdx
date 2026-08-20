@@ -25,7 +25,7 @@ Most commitdog errors are recoverable — when something goes wrong during a syn
 
     This creates the repository on your configured platform via API, runs `git init`, makes the first commit, sets the remote, and pushes — no browser needed. See [Setup](/setup#start-a-new-repository) for the full flow.
 
-    If you already have a local git repository that you want to connect to an existing remote, add the remote manually with `git remote add origin <url>`.
+    If you already have a local Git repository that you want to connect to an existing remote, add the remote manually with `git remote add origin <url>`.
   </Accordion>
 
   <Accordion title="HTTPS authentication failure during push">
@@ -59,7 +59,7 @@ Most commitdog errors are recoverable — when something goes wrong during a syn
   <Accordion title="Missing upstream (branch not tracked)">
     **What it means:** Your local branch has no upstream tracking reference on the remote. This happens when you create a branch locally and push it for the first time without `--set-upstream`.
 
-    **Fix:** Run `commitdog sync`. It detects that the remote branch does not exist yet and automatically pushes with `--set-upstream` to create the tracking reference. You do not need to run any git commands manually.
+    **Fix:** Run `commitdog sync`. It detects that the remote branch does not exist yet and automatically pushes with `--set-upstream` to create the tracking reference. You do not need to run any Git commands manually.
 
     ```bash
     commitdog sync
@@ -99,7 +99,7 @@ Most commitdog errors are recoverable — when something goes wrong during a syn
   </Accordion>
 
   <Accordion title="Version drift warning">
-    **What it means:** Your version file (for example, the version constant in `main.go`) says one version, but the latest git tag on your repository says another. This usually happens after a partial or failed release.
+    **What it means:** Your version file (for example, the version constant in `main.go`) says one version, but the latest Git tag on your repository says another. This usually happens after a partial or failed release.
 
     **Fix:** commitdog warns you before touching anything:
 

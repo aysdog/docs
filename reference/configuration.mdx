@@ -38,7 +38,7 @@ The file has a single top-level key (`email`) and one section per platform.
 | `host` | `[forgejo]` | Forgejo instance URL |
 | `email` | `[forgejo]` | Email override for Forgejo |
 
-When commitdog needs an email for a platform, it first checks the platform-specific `email` key. If that is not set, it falls back to the top-level `email`. This lets you use different identities on different platforms without affecting your global git config.
+When commitdog needs an email for a platform, it first checks the platform-specific `email` key. If that is not set, it falls back to the top-level `email`. This lets you use different identities on different platforms without affecting your global Git config.
 
 ### Sample config.toml
 
