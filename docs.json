@@ -59,7 +59,9 @@
     ]
   },
   "fonts": {
-    "family": "Source Sans Pro"
+    "heading": {
+      "family": "Geist"
+    }
   },
   "description": "Fastest Git workflow CLI for solo devs and teams.",
   "logo": {
