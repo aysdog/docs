@@ -3,7 +3,9 @@
   "name": "commitdog",
   "theme": "mint",
   "colors": {
-    "primary": "#FEB300"
+    "primary": "#FEB300",
+    "light": "#FEB300",
+    "dark": "#FEB300"
   },
   "navbar": {
     "primary": {
@@ -73,5 +75,8 @@
   },
   "icons": {
     "library": "lucide"
+  },
+  "appearance": {
+    "default": "dark"
   }
 }
