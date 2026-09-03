@@ -1,0 +1,123 @@
+---
+title: "Merge branches with a diff preview and a generated commit message"
+sidebarTitle: "merge"
+description: "Pick a branch to merge into your current one, preview the diff and conflict status first, and get a detailed merge commit message generated from the branch's commits."
+icon: "git-merge"
+---
+
+`commitdog merge` merges another local branch into the branch you are on. Before anything touches your history, it shows every mergeable branch with its diff stats and whether the merge would conflict. After a clean merge, commitdog generates a detailed merge commit message from all the commits on that branch, grouped by type, and lets you use it, edit it, or keep git's default.
+
+## Usage
+
+```bash
+commitdog merge
+```
+
+Run it from the branch you want to merge *into*. commitdog requires a git repository and a checked-out branch (not a detached HEAD).
+
+## Merge flow
+
+<Steps>
+  <Step title="Pick a branch">
+    commitdog lists every other local branch that has changes relative to your current branch, with added and removed lines, file count, and conflict status:
+
+    ```text
+      merge into main:
+
+      1  feat/auth                    +214  -38    6 files   clean
+      2  fix/session-timeout          +12   -4     2 files   clean
+      3  refactor/api-client          +180  -220   9 files   conflict
+
+      [1-3] pick, [q] quit ›
+    ```
+
+    Branches with no changes against your current branch are hidden. The conflict status comes from a dry-run merge that commitdog performs and aborts, so you know before committing to anything.
+  </Step>
+  <Step title="Preview the changes">
+    After you pick a branch, commitdog prints a per-file diff stat (up to 10 files) and offers a full diff view:
+
+    ```text
+      merging feat/auth into main
+
+      auth/token.go       | 120 ++++++++++++++
+      auth/middleware.go  |  64 ++++++--
+      ...
+
+      [1] merge   [2] view diff   [3] cancel ›
+    ```
+
+    Choosing `2` opens a colorized diff, paged 40 lines at a time. Press Enter for more or `q` to go back to the menu.
+  </Step>
+  <Step title="Merge">
+    Choosing `1` runs the merge with `--no-ff`, so a merge commit is always created:
+
+    ```text
+      merging... done
+    ```
+  </Step>
+  <Step title="Review the generated merge commit message">
+    commitdog reads every commit on the merged branch (excluding merge commits) and builds a merge commit message with a summary subject and sections grouped by type: features, bug fixes, security, removed, refactoring, and documentation.
+
+    ```text
+      ─────────────────────────────────
+      merge feat/auth → main: add refreshToken and verifyToken, fix 2 issues (7 commits)
+
+      features
+        · add refreshToken and verifyToken
+
+      bug fixes
+        · resolve session timeout on logout
+        · handle expired cookies in middleware
+      ─────────────────────────────────
+
+      [enter] use this message  [e] edit  [s] skip ›
+    ```
+
+    - **Enter** amends the merge commit with the generated message.
+    - **`e`** opens the message in `$EDITOR` so you can adjust it before it is applied.
+    - **`s`** skips the generated message and keeps git's default merge commit message.
+  </Step>
+  <Step title="Push">
+    commitdog confirms the merge and asks whether to push:
+
+    ```text
+      ✓ merged feat/auth into main
+      push to origin/main? [Y/n] ›
+    ```
+  </Step>
+</Steps>
+
+## Conflict handling
+
+If you pick a branch marked `conflict`, commitdog warns you before merging:
+
+```text
+  ⚠ this merge has conflicts.
+
+  1  merge and open conflicts in editor
+  2  cancel
+
+  [1/2] ›
+```
+
+Choosing `1` starts the merge without committing, lists every conflicted file, and opens them in your editor (`$EDITOR`, then `$VISUAL`, falling back to `vi`). With a single conflicted file, it opens immediately. With several, you pick which file to open:
+
+```text
+  conflicted files:
+
+  1  auth/token.go
+  2  auth/middleware.go
+
+  [1-2] open file, [q] quit ›
+```
+
+After you resolve all conflicts, finish the merge manually:
+
+```bash
+git add .
+git commit
+```
+
+<Note>
+  The generated merge commit message is only offered on clean merges. Conflicted merges use the standard git commit flow after you resolve the files.
+</Note>
