@@ -28,6 +28,7 @@
         "pages": [
           "commands/commit",
           "commands/branch",
+          "commands/merge",
           "commands/sync",
           "commands/pr",
           "commands/stash",
