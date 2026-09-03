@@ -1,14 +1,16 @@
 ---
-title: "Create and review GitHub pull requests with commitdog pr"
+title: "Create and review pull requests with commitdog pr"
 sidebarTitle: "pull request"
-description: "Open PRs from feature branches with a diff viewer, or list, review, and merge open PRs from main — all from the terminal. GitHub only."
+description: "Open PRs from feature branches with a diff viewer, or list, review, and merge open PRs from main — all from the terminal, on GitHub, GitLab, Gitea, or Forgejo."
 icon: "git-pull-request"
 ---
 
 `commitdog pr` does different things depending on which branch you are on. On a feature branch it walks you through creating a pull request: you review a diff, enter a title and description, and commitdog creates the PR and opens it in your browser. On `main` or `master` it fetches all open PRs, lets you navigate them with keyboard shortcuts, view their diffs, and merge or close them without leaving the terminal.
 
+`commitdog pr` works with GitHub, GitLab, Gitea, and Forgejo. It targets your project's primary platform, which is set during `commitdog init` and stored in the `.commitdog` file. If no primary platform is set, commitdog uses GitHub. On GitLab, the same flow creates and merges merge requests instead of pull requests.
+
 <Note>
-  `commitdog pr` works with GitHub only. Configure your GitHub token with `commitdog setup` before using this command.
+  Configure a token for your platform with `commitdog setup` before using this command. If commitdog does not find a token for the project's platform, it exits with an error telling you to run `commitdog setup`.
 </Note>
 
 ## Usage
@@ -40,7 +42,7 @@ The behavior is determined automatically by your current branch.
         ```
       </Step>
       <Step title="PR is created and opened">
-        commitdog calls the GitHub API and prints the PR number and URL:
+        commitdog calls your platform's API and prints the PR number and URL:
 
         ```text
           ✓ PR #42 created
@@ -50,13 +52,22 @@ The behavior is determined automatically by your current branch.
         ```
 
         Press Enter or `y` to open the PR in your default browser.
+
+        On GitLab, commitdog creates a merge request and prints it with GitLab's `!` numbering:
+
+        ```text
+          ✓ MR !42 created
+          https://gitlab.com/you/repo/-/merge_requests/42
+        
+          open in browser? [Y/n] ›
+        ```
       </Step>
     </Steps>
   </Tab>
   <Tab title="Main branch">
     ## Reviewing PRs
 
-    When you run `commitdog pr` on `main` or `master`, commitdog fetches all open PRs and displays them in a scrollable list:
+    When you run `commitdog pr` on `main` or `master`, commitdog fetches all open PRs (or merge requests on GitLab) and displays them in a scrollable list:
 
     ```text
       open PRs — you/repo
@@ -77,7 +88,7 @@ The behavior is determined automatically by your current branch.
 
     ### Merging a PR
 
-    Pressing `m` on a selected PR opens the merge method picker:
+    Pressing `m` on a selected PR opens the merge method picker. All four platforms offer the same three methods. On GitLab, the rebase option calls GitLab's rebase API instead of a merge.
 
     ```text
       merge PR #42 — feat(auth): add refreshToken and verifyToken
@@ -97,7 +108,7 @@ The behavior is determined automatically by your current branch.
       delete feat/auth branch? [Y/n] ›
     ```
 
-    Selecting yes deletes both the remote branch (via the GitHub API) and the local branch. commitdog then checks out the base branch and pulls the latest changes automatically:
+    Selecting yes deletes both the remote branch (via your platform's API) and the local branch. commitdog then checks out the base branch and pulls the latest changes automatically:
 
     ```text
       pulling main...
