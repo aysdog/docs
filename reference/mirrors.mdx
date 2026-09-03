@@ -1,0 +1,122 @@
+---
+title: "Mirror your repo across multiple Git platforms"
+sidebarTitle: "Mirrors"
+description: "Push the same repository to GitHub, GitLab, Gitea, and Forgejo at once. Add mirrors with commitdog init, push with platform flags, and release everywhere with release --all."
+icon: "copy"
+---
+
+A mirror is a copy of your repository on a second Git platform. Your primary platform stays the default target for commits, pushes, pull requests, and releases, and each mirror gets its own git remote that you can push to and release to on demand. commitdog stores the mirror list in the `.commitdog` file in your repository root, so the setup travels with the repo.
+
+Use mirrors when you want your code available on more than one platform — for example, a public GitHub repo mirrored to a self-hosted Gitea instance, or a GitLab primary with a GitHub mirror for visibility.
+
+## Prerequisites
+
+- A configured primary platform (`commitdog setup` and `commitdog init`)
+- A saved token for each platform you want to mirror to (run `commitdog setup` for that platform first)
+
+## Add a mirror
+
+Run `commitdog init` inside a repo that is already configured. Instead of creating a new repo, commitdog shows a management menu:
+
+```bash
+commitdog init
+```
+
+```text
+  this repo is configured for github.
+
+  1  change platform
+  2  add mirror
+  3  cancel
+
+  [1/2/3] pick › 2
+```
+
+Pick `2` and choose the platform to add. commitdog then:
+
+1. Connects to the platform with your saved token.
+2. Creates the repo there (or reuses it if a repo with the same name already exists).
+3. Adds a git remote named after the platform (`gitlab`, `gitea`, `forgejo`, or `github`).
+4. Writes the mirror to the `mirrors` list in `.commitdog`.
+5. Pushes your current branch to the new mirror.
+
+If the initial push fails, the mirror is still registered. commitdog prints the platform flag to retry, for example `commitdog -gt`.
+
+## Remove a mirror
+
+Run `commitdog init` again in a repo that has mirrors. The menu gains a remove option:
+
+```text
+  this repo is configured for github.
+  mirrors: gitea
+
+  1  change platform
+  2  add mirror
+  3  remove mirror
+  4  cancel
+
+  [1/2/3/4] pick › 3
+```
+
+Removing a mirror deletes its git remote from the repo and removes the platform from the `mirrors` list in `.commitdog`. Your token and the repo on the platform are untouched.
+
+To also delete the saved token, run `commitdog setup` and pick **remove a platform**. See [Setup](/setup#remove-a-platform).
+
+## Push to a specific platform
+
+Platform shortcut flags run the normal [commit flow](/commands/commit) but push to the platform you name instead of your primary:
+
+```bash
+commitdog -gh    # commit and push to github
+commitdog -gl    # commit and push to gitlab
+commitdog -gt    # commit and push to gitea
+commitdog -fg    # commit and push to forgejo
+```
+
+You can combine a flag with specific files:
+
+```bash
+commitdog -gt main.go    # stage main.go, commit, push to gitea
+```
+
+Without a flag, `commitdog` pushes to your primary platform. Mirrors are never pushed to automatically during a normal commit — you push to each mirror explicitly with its flag.
+
+### Unpushed commit detection
+
+When you run `commitdog` with nothing to commit, it checks whether any configured remote is behind:
+
+- If your target platform has unpushed commits, commitdog offers to push them.
+- If the primary is up to date but a mirror is behind, commitdog tells you which flag to run:
+
+```text
+  up to date with github
+  gitea has unpushed commits — run 'commitdog -gt' to push
+```
+
+## Release to mirrors
+
+By default, `commitdog release` publishes only to your primary platform. Two options extend that to mirrors:
+
+```bash
+commitdog release --all    # release to primary + every mirror
+commitdog release -gt      # publish the existing release to gitea only
+```
+
+With `--all`, commitdog runs the full release on your primary first, then for each mirror pushes the tags and creates a release with the same version, changelog, and build artifacts.
+
+With a platform flag (`-gh`, `-gl`, `-gt`, `-fg`), commitdog skips the version bump and reuses the latest existing tag. Use this to catch a mirror up after a normal release, or to retry a mirror that failed during `--all`. The mirror's remote must already be configured; if it is not, commitdog exits and tells you to add the platform as a mirror with `commitdog init`.
+
+See [Releasing](/release/overview#release-to-mirrors) for the full release workflow.
+
+## How mirrors are stored
+
+Mirrors live in the `.commitdog` file in your repository root, next to your release targets:
+
+```text
+configured = true
+primary = "github"
+mirrors = ["gitea"]
+targets = ["linux/amd64", "linux/arm64", "darwin/amd64", "darwin/arm64", "windows/amd64"]
+```
+
+The file is safe to commit. Anyone cloning the repo gets the same primary and mirror layout, though each collaborator needs their own tokens configured with `commitdog setup`. See the [configuration reference](/reference/configuration#per-repo-project-config) for every key.

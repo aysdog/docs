@@ -144,3 +144,30 @@ The release command works across GitHub, GitLab, Gitea, and Forgejo. The core wo
 </Tabs>
 
 The platform is read from your `.commitdog` config file (set by `commitdog setup`). If no platform is configured, commitdog defaults to GitHub.
+
+## Release to mirrors
+
+If your repo has [mirror platforms](/reference/mirrors) configured, you can publish the same release everywhere instead of only on your primary platform.
+
+### Release to primary and all mirrors
+
+```bash
+commitdog release --all
+```
+
+`--all` runs the full release workflow on your primary platform first. Then, for each mirror listed in `.commitdog`, commitdog pushes the tags to that mirror's remote and creates a release there with the same version, changelog, and build artifacts. Each mirror's release URL is printed as it completes.
+
+If a mirror fails partway, only that mirror's steps are rolled back. The primary release and any mirrors that already succeeded stay published.
+
+### Publish an existing release to one platform
+
+```bash
+commitdog release -gh    # publish to github
+commitdog release -gl    # publish to gitlab
+commitdog release -gt    # publish to gitea
+commitdog release -fg    # publish to forgejo
+```
+
+With a platform flag, commitdog skips the version bump entirely. It takes your latest Git tag, pushes the tags to that platform's remote, rebuilds the binaries for Go projects, and creates the release there. Use this to catch up a mirror after a normal `commitdog release`, or to retry a single mirror that failed during `--all`.
+
+The platform's remote must already exist. If it does not, commitdog exits with a prompt to add the platform as a mirror via `commitdog init`. A token for the platform is also required; run `commitdog setup` if you have not saved one.

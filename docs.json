@@ -54,6 +54,7 @@
         "pages": [
           "reference/configuration",
           "reference/platforms",
+          "reference/mirrors",
           "reference/troubleshooting"
         ]
       }

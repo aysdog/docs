@@ -24,11 +24,12 @@ Before you can commit, create repos, open PRs, or publish releases, commitdog ne
       2  gitlab
       3  gitea
       4  forgejo
+      5  remove a platform
     
-      [1/2/3/4] pick › 1
+      [1/2/3/4/5] pick › 1
     ```
 
-    Enter the number for your platform and press Enter.
+    Enter the number for your platform and press Enter. Option `5` removes a previously configured platform instead of adding one; see [Remove a platform](#remove-a-platform).
   </Step>
   <Step title="Enter your email">
     commitdog will prompt you for the email address associated with your platform account. This email is applied per-repo via `git config --local` so your global Git config stays untouched.
@@ -113,6 +114,27 @@ Create a personal access token on your platform with the scopes listed below, th
     After entering your token, commitdog will prompt you for your Forgejo instance URL (e.g. `https://git.yourcompany.com`).
   </Tab>
 </Tabs>
+
+## Remove a platform
+
+To disconnect a platform you no longer use, run `commitdog setup` and pick option `5`. commitdog lists your configured platforms and asks which one to remove:
+
+```text
+  remove which platform?
+
+  1  github
+  2  gitea
+
+  [1-2] pick, [q] quit › 
+```
+
+After you confirm, commitdog:
+
+- Deletes the token, host, and email for that platform from `~/.config/commitdog/config.toml`
+- Removes the platform's git remote from the current repo
+- Removes the platform from the `.commitdog` file in the current repo
+
+If the platform is a [mirror](/reference/mirrors), it is dropped from the `mirrors` list. If it is your primary platform, commitdog clears the primary from `.commitdog` and you need to run `commitdog init` again to reconfigure the repo.
 
 ## Where your config is stored
 
