@@ -113,8 +113,13 @@ commitdog setup
   2  gitlab
   3  gitea
   4  forgejo
+  5  remove a platform
 
-  [1/2/3/4] pick › 
+  [1/2/3/4/5] pick › 
 ```
 
-commitdog saves each token to `~/.config/commitdog/config.toml` with `0600` permissions. Your tokens never leave your machine except when commitdog makes an API call to the platform you configured.
+commitdog saves each token to `~/.config/commitdog/config.toml` with `0600` permissions. Your tokens never leave your machine except when commitdog makes an API call to the platform you configured. Option `5` disconnects a platform: it deletes the saved token and removes the platform's remote and `.commitdog` entry from the current repo. See [Remove a platform](/setup#remove-a-platform).
+
+## Using multiple platforms at once
+
+A single repo can live on several platforms at the same time. One platform is the primary and the rest are mirrors, each with its own git remote. Add mirrors with `commitdog init`, push to a specific platform with the shortcut flags (`commitdog -gh`, `-gl`, `-gt`, `-fg`), and publish a release everywhere with `commitdog release --all`. See [Mirrors](/reference/mirrors) for the full workflow.

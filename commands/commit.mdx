@@ -12,6 +12,20 @@ Running `commitdog` with no arguments stages all your changes and analyzes the d
 ```bash
 commitdog           # stage all changes and suggest messages
 commitdog <file>    # stage a specific file only
+
+commitdog -gh       # commit and push to github
+commitdog -gl       # commit and push to gitlab
+commitdog -gt       # commit and push to gitea
+commitdog -fg       # commit and push to forgejo
+```
+
+The platform flags run the same commit flow but push to the platform you name instead of your primary. Combine a flag with a file to stage only that file: `commitdog -gt main.go`. See [Mirrors](/reference/mirrors) for pushing the same repo to multiple platforms.
+
+If there is nothing to commit, commitdog checks your remotes for unpushed commits. It offers to push if the target platform is behind, and if a [mirror](/reference/mirrors) is behind instead, it prints the flag to run:
+
+```text
+  up to date with github
+  gitea has unpushed commits — run 'commitdog -gt' to push
 ```
 
 ## How suggestions are derived
