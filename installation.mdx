@@ -64,7 +64,15 @@ Once commitdog is installed, run `commitdog setup` to configure your email and p
 ---
 
 <Accordion title="Uninstall commitdog">
-  To remove commitdog and its configuration from your machine, run the appropriate commands for your platform.
+  The recommended way to remove commitdog is the built-in uninstall command:
+
+  ```bash
+  commitdog --uninstall
+  ```
+
+  The command asks for confirmation, then removes the commitdog binary and its config directory from your machine. On Linux and macOS, it prompts for `sudo` if the binary requires elevated permissions to delete. If any step fails, commitdog prints the exact manual command to run instead.
+
+  If the binary is already gone or you prefer to remove everything by hand, run the commands for your platform:
 
   <Tabs>
     <Tab title="Linux / macOS">
